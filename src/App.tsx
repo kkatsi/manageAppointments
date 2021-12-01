@@ -1,57 +1,85 @@
-import React from 'react';
-import logo from './logo.svg';
-import { Counter } from './features/counter/Counter';
-import './App.css';
+import React, { useEffect } from "react";
+import "./App.css";
+// import tw from "twin.macro";
+// import styled from "styled-components";
+import { useDispatch } from "react-redux";
+// import { RootState } from "./app/store";
+import { setCurrentUser, initialState } from "./features/user/userSlice";
+import { onAuthStateChanged } from "firebase/auth";
+import { auth } from "./firebase";
+import { Routes, Route } from "react-router-dom";
+
+import Login from "./pages/Login";
+import MainScreen from "./pages/MainScreen";
+import ProtedctedScreen from "./pages/ProtedctedScreen";
+import PrivateRoute from "./components/PrivateRoute";
+
+// const Test = styled.div`
+//   ${tw`text-red-500`}
+// `;
+
+// const Image = styled.img`
+//   object-fit: cover;
+//   object-position: center;
+//   ${tw`rounded-full w-20 h-20 border-2 border-pink-600 mx-auto`}
+// `;
 
 function App() {
+  // const user = useSelector((state: RootState) => state.user.value);
+  // const loading = useSelector((state: RootState) => state.user.isLoading);
+  const dispatch = useDispatch();
+  // const emailRef = useRef<HTMLInputElement | null>(null);
+  // const passwordRef = useRef<HTMLInputElement | null>(null);
+  // const nameRef = useRef<HTMLInputElement | null>(null);
+  // const photoRef = useRef<HTMLInputElement | null>(null);
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      if (user) dispatch(setCurrentUser(user));
+      else dispatch(setCurrentUser(initialState.value));
+    });
+
+    return unsubscribe;
+  }, [dispatch]);
+
+  // const handleUpdateProfile = useCallback(
+
+  //   (e, currentUser) => {
+  //     console.log(currentUser);
+  //     e.preventDefault();
+  //     dispatch(
+  //       updateProfileFirebase({
+  //         info: {
+  //           name: nameRef.current?.value || "",
+  //           photo: photoRef.current?.value || "",
+  //         },
+  //       })
+  //     );
+  //   },
+  //   [dispatch]
+  // );
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <Counter />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <span>
-          <span>Learn </span>
-          <a
-            className="App-link"
-            href="https://reactjs.org/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            React
-          </a>
-          <span>, </span>
-          <a
-            className="App-link"
-            href="https://redux.js.org/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Redux
-          </a>
-          <span>, </span>
-          <a
-            className="App-link"
-            href="https://redux-toolkit.js.org/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Redux Toolkit
-          </a>
-          ,<span> and </span>
-          <a
-            className="App-link"
-            href="https://react-redux.js.org/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            React Redux
-          </a>
-        </span>
-      </header>
-    </div>
+    <Routes>
+      <Route path="/" element={<MainScreen />} />
+      <Route
+        path="/login"
+        element={
+          <PrivateRoute>
+            <Login />
+          </PrivateRoute>
+        }
+      />
+      <Route
+        path="/protected"
+        element={
+          <PrivateRoute>
+            <ProtedctedScreen />
+          </PrivateRoute>
+        }
+      />
+
+      {/* <Route path="invoices" element={<Invoices />} /> */}
+    </Routes>
   );
 }
 
