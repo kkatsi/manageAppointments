@@ -7,6 +7,7 @@ import MenuButton from "../components/MenuButton";
 import Sidebar from "../components/Sidebar";
 import About from "./About";
 import MainScreen from "./MainScreen";
+import Settings from "./Settings";
 
 const MainContainer = styled(Div100vh)`
   ${tw`bg-gray-100`}
@@ -22,15 +23,17 @@ export default function Home() {
   return (
     <MainContainer
       style={{
-        transform: isOpen ? `translateX(250px)` : "translateX(0px)",
+        transform: isOpen ? `translateX(250px)` : "translateX(0)",
         transition: "all .5s",
+        maxWidth: "100vw",
       }}
     >
       <Sidebar handleMenu={handleMenu} />
       <MenuButton handleMenu={handleMenu} />
       <Routes>
-        <Route path="/" element={<MainScreen />} />
+        <Route path="" element={<MainScreen />} />
         <Route path="about" element={<About />} />
+        <Route path="settings" element={<Settings />} />
       </Routes>
     </MainContainer>
   );

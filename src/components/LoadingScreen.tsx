@@ -1,6 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import tw from "twin.macro";
+import Div100vh from "react-div-100vh";
 
 const Background = styled.img`
   object-fit: cover;
@@ -12,7 +13,7 @@ export default function LoadingScreen() {
   return (
     <>
       <Background src={require("../assets/bg-light.webp").default} />
-      <div className="flex items-center justify-center w-screen h-screen">
+      <Div100vh className="flex items-center justify-center w-screen">
         <div className="flex justify-center items-center space-x-1 text-gray-700">
           <svg
             fill="none"
@@ -30,7 +31,7 @@ export default function LoadingScreen() {
 
           <div>Loading ...</div>
         </div>
-      </div>
+      </Div100vh>
     </>
   );
 }

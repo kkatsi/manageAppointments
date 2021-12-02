@@ -1,5 +1,10 @@
 import React from "react";
+import PageContent from "../components/PageContent";
 
 export default function About() {
-  return <div>About</div>;
+  return (
+    <PageContent>
+      <span>About</span>
+    </PageContent>
+  );
 }

@@ -15,7 +15,7 @@ export default function MenuButton({ handleMenu }: Props) {
     <MenuButtonContainer onClick={handleMenu}>
       {" "}
       <FiMenu size={30} className="mr-2" />
-      <span className="font-bold">Menu</span>
+      <span className="font-bold">Μενού</span>
     </MenuButtonContainer>
   );
 }

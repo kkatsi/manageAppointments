@@ -4,7 +4,7 @@ import Div100vh from "react-div-100vh";
 interface Props {
   centerX?: boolean;
   centerY?: boolean;
-  children: JSX.Element;
+  children: JSX.Element[] | JSX.Element;
 }
 
 export default function PageContent({ centerX, centerY, children }: Props) {

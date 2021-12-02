@@ -60,7 +60,7 @@ function App() {
   return (
     <Routes>
       <Route
-        path="//*"
+        path="/*"
         element={
           <PrivateRoute>
             <Home />
