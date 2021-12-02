@@ -17,6 +17,9 @@ const Input = styled.input`
   &:focus-visible {
     outline: none;
   }
+  &:-internal-autofill-previewed {
+    font-size: 1rem !important;
+  }
   ${tw`rounded-sm bg-white m-0 w-full h-full pr-3 py-3`}
 `;
 

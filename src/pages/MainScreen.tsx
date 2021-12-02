@@ -1,5 +1,10 @@
 import React from "react";
+import PageContent from "../components/PageContent";
 
 export default function MainScreen() {
-  return <div>Main Scren</div>;
+  return (
+    <PageContent>
+      <span>main screen</span>
+    </PageContent>
+  );
 }

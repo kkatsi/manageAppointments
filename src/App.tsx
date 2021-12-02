@@ -10,8 +10,7 @@ import { auth } from "./firebase";
 import { Routes, Route } from "react-router-dom";
 
 import Login from "./pages/Login";
-import MainScreen from "./pages/MainScreen";
-import ProtedctedScreen from "./pages/ProtedctedScreen";
+import Home from "./pages/Home";
 import PrivateRoute from "./components/PrivateRoute";
 
 // const Test = styled.div`
@@ -60,7 +59,14 @@ function App() {
   // );
   return (
     <Routes>
-      <Route path="/" element={<MainScreen />} />
+      <Route
+        path="//*"
+        element={
+          <PrivateRoute>
+            <Home />
+          </PrivateRoute>
+        }
+      />
       <Route
         path="/login"
         element={
@@ -69,14 +75,14 @@ function App() {
           </PrivateRoute>
         }
       />
-      <Route
+      {/* <Route
         path="/protected"
         element={
           <PrivateRoute>
             <ProtedctedScreen />
           </PrivateRoute>
         }
-      />
+      /> */}
 
       {/* <Route path="invoices" element={<Invoices />} /> */}
     </Routes>
