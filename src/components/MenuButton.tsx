@@ -3,7 +3,7 @@ import tw from "twin.macro";
 import { FiMenu } from "react-icons/fi";
 
 const MenuButtonContainer = styled.div`
-  ${tw`absolute top-3 left-3 flex items-center cursor-pointer`}
+  ${tw`absolute top-3 left-3 flex items-center cursor-pointer text-gray-800`}
 `;
 
 interface Props {

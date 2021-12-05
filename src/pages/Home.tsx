@@ -6,6 +6,9 @@ import tw from "twin.macro";
 import MenuButton from "../components/MenuButton";
 import Sidebar from "../components/Sidebar";
 import About from "./About";
+import ChangeEmail from "./ChangeEmail";
+import ChangeName from "./ChangeName";
+import ChangePassword from "./ChangePassword";
 import MainScreen from "./MainScreen";
 import Settings from "./Settings";
 
@@ -34,6 +37,9 @@ export default function Home() {
         <Route path="" element={<MainScreen />} />
         <Route path="about" element={<About />} />
         <Route path="settings" element={<Settings />} />
+        <Route path="settings/change-name" element={<ChangeName />} />
+        <Route path="settings/change-email" element={<ChangeEmail />} />
+        <Route path="settings/change-password" element={<ChangePassword />} />
       </Routes>
     </MainContainer>
   );

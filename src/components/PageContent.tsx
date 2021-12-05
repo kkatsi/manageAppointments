@@ -12,7 +12,7 @@ export default function PageContent({ centerX, centerY, children }: Props) {
     <Div100vh
       className={`${centerX ? "items-center" : "items-start"} ${
         centerY ? "justify-center" : "justify-start"
-      } py-20 mx-auto container flex-col flex px-2`}
+      } py-20 mx-auto container flex-col flex px-3`}
     >
       {children}
     </Div100vh>

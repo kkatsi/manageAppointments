@@ -6,7 +6,7 @@ import { RootState } from "../app/store";
 import { useSelector } from "react-redux";
 import { Link, LinkProps, useResolvedPath, useMatch } from "react-router-dom";
 import { FiInfo, FiInbox } from "react-icons/fi";
-import { IoMdSettings } from "react-icons/io";
+import { IoSettings } from "react-icons/io5";
 
 const SideBarContainer = styled(Div100vh)`
   width: 250px;
@@ -92,7 +92,7 @@ export default function Sidebar({ handleMenu }: Props) {
       </Menu>
       <BottomContainer>
         <BottomLink to="/settings" onClick={handleMenu}>
-          <IoMdSettings size={18} className="mr-2" /> Ρυθμίσεις
+          <IoSettings size={18} className="mr-2" /> Ρυθμίσεις
         </BottomLink>
       </BottomContainer>
     </SideBarContainer>

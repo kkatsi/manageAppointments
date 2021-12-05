@@ -1,5 +1,11 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { login, logout, updateProf } from "../authenticationAPI";
+import {
+  login,
+  logout,
+  updateMail,
+  updatePass,
+  updateProf,
+} from "../authenticationAPI";
 
 export interface UserProfile {
   displayName: string;
@@ -10,6 +16,9 @@ export interface UserProfile {
 export interface userState {
   value: UserProfile;
   isLoading: boolean;
+  isSuccess: boolean;
+  isError: boolean;
+  errorMessage: string;
 }
 
 export const initialState: userState = {
@@ -19,6 +28,9 @@ export const initialState: userState = {
     photoURL: "",
   },
   isLoading: true,
+  isSuccess: false,
+  isError: false,
+  errorMessage: "",
 };
 
 export const loginFirebase = createAsyncThunk(
@@ -51,6 +63,22 @@ export const updateProfileFirebase = createAsyncThunk(
   }
 );
 
+export const updateEmailFirebase = createAsyncThunk(
+  "authentication/UpdateEmail",
+  async (email: string) => {
+    const response = await updateMail(email);
+    return response;
+  }
+);
+
+export const updatePasswordFirebase = createAsyncThunk(
+  "authentication/UpdatePassword",
+  async (password: string) => {
+    const response = await updatePass(password);
+    return response;
+  }
+);
+
 export const userSlice = createSlice({
   name: "authentication",
   initialState: initialState,
@@ -62,6 +90,20 @@ export const userSlice = createSlice({
         photoURL: action.payload.photoURL,
       };
       state.isLoading = false;
+    },
+    setSuccess: (state, action) => {
+      state.value = { ...state.value };
+      state.isLoading = false;
+      state.isSuccess = action.payload;
+      state.isError = false;
+      state.errorMessage = "";
+    },
+    setError: (state, action) => {
+      state.value = { ...state.value };
+      state.isLoading = false;
+      state.isSuccess = false;
+      state.isError = action.payload.status;
+      state.errorMessage = action.payload.message;
     },
   },
   extraReducers: (builder) => {
@@ -90,6 +132,9 @@ export const userSlice = createSlice({
           displayName: action.payload.displayName || "",
           photoURL: action.payload.photoURL || "",
         };
+        state.isSuccess = action.payload?.status ? true : false;
+        state.isError = action.payload?.status ? false : true;
+        state.errorMessage = "";
       })
       .addCase(updateProfileFirebase.rejected, (state) => {
         state.isLoading = false;
@@ -104,13 +149,47 @@ export const userSlice = createSlice({
           photoURL: "",
           displayName: "",
         };
+        state.errorMessage = "";
+        state.isError = false;
+        state.isSuccess = false;
       })
       .addCase(logoutFirebase.rejected, (state) => {
+        state.isLoading = false;
+      })
+      .addCase(updateEmailFirebase.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(updateEmailFirebase.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.value = {
+          ...state.value,
+          email: String(action.payload.email) || state.value.email,
+        };
+        state.isSuccess = action.payload?.status ? true : false;
+        state.isError = action.payload?.status ? false : true;
+        state.errorMessage = action.payload?.message;
+      })
+      .addCase(updateEmailFirebase.rejected, (state) => {
+        state.isLoading = false;
+      })
+      .addCase(updatePasswordFirebase.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(updatePasswordFirebase.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.value = {
+          ...state.value,
+        };
+        state.isSuccess = action.payload?.status ? true : false;
+        state.isError = action.payload?.status ? false : true;
+        state.errorMessage = action.payload?.message;
+      })
+      .addCase(updatePasswordFirebase.rejected, (state) => {
         state.isLoading = false;
       });
   },
 });
 
-export const { setCurrentUser } = userSlice.actions;
+export const { setCurrentUser, setSuccess, setError } = userSlice.actions;
 
 export default userSlice.reducer;

@@ -5,15 +5,18 @@ import Div100vh from "react-div-100vh";
 
 const Background = styled.img`
   object-fit: cover;
-  z-index: -1;
-  ${tw`absolute top-0 left-0 w-full h-full`}
+  z-index: 99;
+  ${tw`absolute top-0 left-0 w-screen h-screen`}
 `;
 
 export default function LoadingScreen() {
   return (
     <>
       <Background src={require("../assets/bg-light.webp").default} />
-      <Div100vh className="flex items-center justify-center w-screen">
+      <Div100vh
+        className="flex items-center justify-center w-screen absolute top-0 left-0"
+        style={{ zIndex: "100" }}
+      >
         <div className="flex justify-center items-center space-x-1 text-gray-700">
           <svg
             fill="none"

@@ -41,22 +41,6 @@ function App() {
     return unsubscribe;
   }, [dispatch]);
 
-  // const handleUpdateProfile = useCallback(
-
-  //   (e, currentUser) => {
-  //     console.log(currentUser);
-  //     e.preventDefault();
-  //     dispatch(
-  //       updateProfileFirebase({
-  //         info: {
-  //           name: nameRef.current?.value || "",
-  //           photo: photoRef.current?.value || "",
-  //         },
-  //       })
-  //     );
-  //   },
-  //   [dispatch]
-  // );
   return (
     <Routes>
       <Route

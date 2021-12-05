@@ -34,8 +34,8 @@ interface FormInputProps {
   type: string;
   defaultValue?: string | number;
   onChange?: () => void;
-  Icon: React.ReactNode;
-  reference: React.MutableRefObject<HTMLInputElement | null>;
+  Icon?: React.ReactNode;
+  reference?: React.MutableRefObject<HTMLInputElement | null>;
 }
 
 export default function FormInput({
