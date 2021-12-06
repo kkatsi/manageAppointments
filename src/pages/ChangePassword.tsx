@@ -12,9 +12,8 @@ import SettingsLabel from "../components/SettingsLabel";
 import SettingsInput from "../components/SettingsInput";
 import { IoIosCheckmark } from "react-icons/io";
 import Alert from "../components/Alert";
-import { useAppDispatch } from "../app/hooks";
 import { RootState } from "../app/store";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 const CustomForm = styled.form`
   max-width: 400px;
@@ -24,7 +23,7 @@ const CustomForm = styled.form`
 export default function ChangePassword() {
   const [passwordLenghtError, setPasswordLengthError] = useState(false);
   const [passwordMatchError, setPasswordMatchError] = useState(false);
-  const dispatch = useAppDispatch();
+  const dispatch = useDispatch();
   const passwordRef = useRef<HTMLInputElement | null>(null);
   const confirmPasswordRef = useRef<HTMLInputElement | null>(null);
   const success = useSelector((state: RootState) => state.user.isSuccess);
@@ -52,6 +51,11 @@ export default function ChangePassword() {
     },
     [dispatch]
   );
+
+  const handleLogout = useCallback(() => {
+    dispatch(logoutFirebase());
+    dispatch(setError({ status: false, message: "" }));
+  }, [dispatch]);
   return (
     <PageContent>
       <CustomForm action="" onSubmit={handlePasswordChange}>
@@ -110,10 +114,7 @@ export default function ChangePassword() {
                 ? "Αποσύνδεση"
                 : ""
             }
-            onSecondButtonClose={() => {
-              dispatch(logoutFirebase());
-              dispatch(setError({ status: false, message: "" }));
-            }}
+            onSecondButtonClose={handleLogout}
           />
         )}
       </>

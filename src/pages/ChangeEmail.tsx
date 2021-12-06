@@ -37,6 +37,10 @@ export default function ChangeEmail() {
     },
     [dispatch, userEmail]
   );
+  const handleLogout = useCallback(() => {
+    dispatch(logoutFirebase());
+    dispatch(setError({ status: false, message: "" }));
+  }, [dispatch]);
   return (
     <PageContent>
       <CustomForm action="" onSubmit={handleEmailChange}>
@@ -75,10 +79,7 @@ export default function ChangeEmail() {
                 ? "Αποσύνδεση"
                 : ""
             }
-            onSecondButtonClose={() => {
-              dispatch(logoutFirebase());
-              dispatch(setError({ status: false, message: "" }));
-            }}
+            onSecondButtonClose={handleLogout}
           />
         )}
       </>
