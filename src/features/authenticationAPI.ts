@@ -5,6 +5,7 @@ import {
   updateEmail,
   updatePassword,
 } from "firebase/auth";
+import { gapi } from "gapi-script";
 import { auth } from "../firebase";
 
 // export function signup(email: string, password: string) {
@@ -14,6 +15,18 @@ import { auth } from "../firebase";
 // export function sendEmailVerification(user: FirebaseUser) {
 //   return user.sendEmailVerification();
 // }
+
+export async function gapiLog() {
+  const googleAuth = gapi.auth2.getAuthInstance();
+  const googleUser = await googleAuth.signIn();
+  return googleUser;
+}
+
+export async function gapiLogO() {
+  const googleAuth = gapi.auth2.getAuthInstance();
+  const googleUser = await googleAuth.signOut();
+  return googleUser;
+}
 
 export function login(email: string, password: string) {
   return signInWithEmailAndPassword(auth, email, password);

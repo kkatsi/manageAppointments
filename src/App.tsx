@@ -1,65 +1,90 @@
-import React, { useEffect } from "react";
+import React, { useCallback, useEffect } from "react";
 import "./App.css";
-// import tw from "twin.macro";
-// import styled from "styled-components";
 import { useDispatch } from "react-redux";
-// import { RootState } from "./app/store";
 import { setCurrentUser, initialState } from "./features/user/userSlice";
-import { onAuthStateChanged } from "firebase/auth";
-import { auth } from "./firebase";
 import { Routes, Route } from "react-router-dom";
-
 import Login from "./pages/Login";
 import Home from "./pages/Home";
 import PrivateRoute from "./components/PrivateRoute";
 
-// const Test = styled.div`
-//   ${tw`text-red-500`}
-// `;
-
-// const Image = styled.img`
-//   object-fit: cover;
-//   object-position: center;
-//   ${tw`rounded-full w-20 h-20 border-2 border-pink-600 mx-auto`}
-// `;
-
 function App() {
-  // const user = useSelector((state: RootState) => state.user.value);
-  // const loading = useSelector((state: RootState) => state.user.isLoading);
   const dispatch = useDispatch();
-  // const emailRef = useRef<HTMLInputElement | null>(null);
-  // const passwordRef = useRef<HTMLInputElement | null>(null);
-  // const nameRef = useRef<HTMLInputElement | null>(null);
-  // const photoRef = useRef<HTMLInputElement | null>(null);
+
+  const updateSigninStatus = useCallback(
+    (isSignedIn: boolean) => {
+      const user = gapi.auth2
+        .getAuthInstance()
+        .currentUser.get()
+        .getBasicProfile();
+      console.log(user, isSignedIn);
+      if (isSignedIn && user)
+        dispatch(
+          setCurrentUser({
+            displayName: user.getName(),
+            email: user.getEmail(),
+            photoURL: user.getImageUrl(),
+          })
+        );
+      else dispatch(setCurrentUser(initialState.value));
+    },
+    [dispatch]
+  );
+
+  const initGoogleSignin = useCallback(() => {
+    window.gapi.load("client:auth2", async () => {
+      await window.gapi.client.init({
+        apiKey: "AIzaSyBBand51q0Nsx4XMX4ud7wduyegmM9qGW4",
+        clientId:
+          "786787354070-4hu38t1vsdb6dqih4s4ota93ke3bl8j6.apps.googleusercontent.com",
+        discoveryDocs: [
+          "https://www.googleapis.com/discovery/v1/apis/calendar/v3/rest",
+        ],
+        scope: "https://www.googleapis.com/auth/calendar",
+      });
+      alert("client loaded");
+      updateSigninStatus(gapi.auth2.getAuthInstance().isSignedIn.get());
+      gapi.auth2.getAuthInstance().isSignedIn.listen(updateSigninStatus);
+    });
+  }, [updateSigninStatus]);
+
+  const insertGapiScript = useCallback(() => {
+    const script = document.createElement("script");
+    script.src = "https://apis.google.com/js/platform.js";
+    script.onload = () => {
+      initGoogleSignin();
+    };
+    document.body.appendChild(script);
+  }, [initGoogleSignin]);
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      if (user) dispatch(setCurrentUser(user));
-      else dispatch(setCurrentUser(initialState.value));
-    });
+    insertGapiScript();
+  }, [insertGapiScript]);
 
-    return unsubscribe;
-  }, [dispatch]);
+  //   // gapi.client.load("calendar", "v3", () => {
+  //   //   console.log("calendar loaded");
+  //   // });
+  // }, [updateSigninStatus]);
 
   return (
-    <Routes>
-      <Route
-        path="/*"
-        element={
-          <PrivateRoute>
-            <Home />
-          </PrivateRoute>
-        }
-      />
-      <Route
-        path="/login"
-        element={
-          <PrivateRoute>
-            <Login />
-          </PrivateRoute>
-        }
-      />
-      {/* <Route
+    <>
+      <Routes>
+        <Route
+          path="/*"
+          element={
+            <PrivateRoute>
+              <Home />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/login"
+          element={
+            <PrivateRoute>
+              <Login />
+            </PrivateRoute>
+          }
+        />
+        {/* <Route
         path="/protected"
         element={
           <PrivateRoute>
@@ -68,8 +93,9 @@ function App() {
         }
       /> */}
 
-      {/* <Route path="invoices" element={<Invoices />} /> */}
-    </Routes>
+        {/* <Route path="invoices" element={<Invoices />} /> */}
+      </Routes>
+    </>
   );
 }
 

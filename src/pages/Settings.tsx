@@ -3,7 +3,10 @@ import PageContent from "../components/PageContent";
 import styled from "styled-components";
 import tw from "twin.macro";
 import { useDispatch } from "react-redux";
-import { logoutFirebase } from "../features/user/userSlice";
+import {
+  gapiLogOut,
+  //  logoutFirebase
+} from "../features/user/userSlice";
 import { MdArrowForwardIos } from "react-icons/md";
 import { Link } from "react-router-dom";
 import SettingsPhoto from "./SettingsPhoto";
@@ -50,7 +53,7 @@ const LinkButton = ({
 export default function Settings() {
   const dispatch = useDispatch();
   const handleLogout = useCallback(() => {
-    dispatch(logoutFirebase());
+    dispatch(gapiLogOut());
   }, [dispatch]);
   return (
     <PageContent>

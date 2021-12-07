@@ -1,5 +1,7 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import {
+  gapiLog,
+  gapiLogO,
   login,
   logout,
   updateMail,
@@ -32,6 +34,22 @@ export const initialState: userState = {
   isError: false,
   errorMessage: "",
 };
+
+export const gapiLogin = createAsyncThunk(
+  "authentication/GapiLogin",
+  async () => {
+    const response = await gapiLog();
+    return response;
+  }
+);
+
+export const gapiLogOut = createAsyncThunk(
+  "authentication/GapiLogout",
+  async () => {
+    const response = await gapiLogO();
+    return response;
+  }
+);
 
 export const loginFirebase = createAsyncThunk(
   "authentication/Login",
@@ -85,9 +103,9 @@ export const userSlice = createSlice({
   reducers: {
     setCurrentUser: (state, action) => {
       state.value = {
-        displayName: action.payload.displayName,
-        email: action.payload.email,
-        photoURL: action.payload.photoURL,
+        displayName: action.payload?.displayName || "",
+        email: action.payload?.email || "",
+        photoURL: action.payload?.photoURL || "",
       };
       state.isLoading = false;
     },
@@ -120,6 +138,24 @@ export const userSlice = createSlice({
         };
       })
       .addCase(loginFirebase.rejected, (state) => {
+        state.isLoading = false;
+      })
+      .addCase(gapiLogin.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(gapiLogin.fulfilled, (state, action) => {
+        state.isLoading = false;
+      })
+      .addCase(gapiLogin.rejected, (state) => {
+        state.isLoading = false;
+      })
+      .addCase(gapiLogOut.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(gapiLogOut.fulfilled, (state, action) => {
+        state.isLoading = false;
+      })
+      .addCase(gapiLogOut.rejected, (state) => {
         state.isLoading = false;
       })
       .addCase(updateProfileFirebase.pending, (state) => {
