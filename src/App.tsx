@@ -31,19 +31,21 @@ function App() {
   );
 
   const initGoogleSignin = useCallback(() => {
-    window.gapi.load("client:auth2", async () => {
-      await window.gapi.client.init({
-        apiKey: "AIzaSyBBand51q0Nsx4XMX4ud7wduyegmM9qGW4",
-        clientId:
-          "786787354070-4hu38t1vsdb6dqih4s4ota93ke3bl8j6.apps.googleusercontent.com",
-        discoveryDocs: [
-          "https://www.googleapis.com/discovery/v1/apis/calendar/v3/rest",
-        ],
-        scope: "https://www.googleapis.com/auth/calendar",
-      });
-      alert("client loaded");
-      updateSigninStatus(gapi.auth2.getAuthInstance().isSignedIn.get());
-      gapi.auth2.getAuthInstance().isSignedIn.listen(updateSigninStatus);
+    window.gapi.load("client:auth2", () => {
+      window.gapi.client
+        .init({
+          apiKey: process.env.REACT_APP_GAPI_API_KEY,
+          clientId: process.env.REACT_APP_GAPI_CLIENT_ID,
+          discoveryDocs: [
+            "https://www.googleapis.com/discovery/v1/apis/calendar/v3/rest",
+          ],
+          scope: "https://www.googleapis.com/auth/calendar",
+        })
+        .then(() => {
+          alert("client loaded");
+          updateSigninStatus(gapi.auth2.getAuthInstance().isSignedIn.get());
+          gapi.auth2.getAuthInstance().isSignedIn.listen(updateSigninStatus);
+        });
     });
   }, [updateSigninStatus]);
 
