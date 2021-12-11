@@ -11,7 +11,6 @@ export async function getItems() {
     .then(function (response) {
       // return response.result.items;
       return response.result.items.map((item) => {
-        // const { start, end, summary, description } = item;
         return {
           start: item.start.dateTime || item.start.date || "",
           end: item.start.dateTime || item.start.date || "",
@@ -22,5 +21,30 @@ export async function getItems() {
     })
     .catch((error) => {
       return [];
+    });
+}
+
+export async function insertEvent(
+  start: string,
+  end: string,
+  description: string,
+  summary: string
+) {
+  const event = {
+    start: { dateTime: start, timeZone: "Europe/Athens" },
+    end: { dateTime: end, timeZone: "Europe/Athens" },
+    description: description,
+    summary: summary,
+  };
+  return await window.gapi.client.calendar.events
+    .insert({
+      calendarId: "primary",
+      resource: event,
+    })
+    .then(function (response) {
+      console.log(response);
+    })
+    .catch((error) => {
+      console.log(error);
     });
 }
