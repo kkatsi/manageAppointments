@@ -67,7 +67,7 @@ export const calendarSlice = createSlice({
       .addCase(insertCalendarEvent.fulfilled, (state, action) => {
         console.log(action.payload);
         state.isLoading = false;
-        // state.value = action.payload;
+        if (action.payload.start !== "") state.value.push(action.payload);
       })
       .addCase(insertCalendarEvent.rejected, (state) => {
         state.isLoading = false;

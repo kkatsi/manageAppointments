@@ -1,17 +1,18 @@
 import React, { useCallback, useMemo, useRef, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { RootState } from "../app/store";
 import PageContent from "../components/PageContent";
-import Calend, { CalendarView, OnNewEventClickData } from "calend"; // import component
+import Calend, {
+  CalendarView,
+  OnEventClickData,
+  OnNewEventClickData,
+} from "calend"; // import component
 import "calend/dist/styles/index.css"; // import styles
 import randomColor from "randomcolor";
-import { insertCalendarEvent } from "../features/calendar/calendarSlice";
-import Modal from "../components/Dialog";
+import EventDialog from "../components/EventDialog";
 
 export default function MainScreen() {
   const calendarItems = useSelector((state: RootState) => state.calendar.value);
-  const dispatch = useDispatch();
-
   const [start, setStart] = useState<string>("");
   const [name, setName] = useState<string>("");
   const [price, setPrice] = useState<number>(0);
@@ -25,9 +26,17 @@ export default function MainScreen() {
     const result = {};
     const uniqueDates = [
       ...new Set(
-        calendarItems.map((item) => new Date(item.start).toLocaleDateString())
+        calendarItems.map((item) => {
+          const unformattedDate = new Date(item.start).toLocaleDateString();
+          let [first, second, ...rest] = unformattedDate.split("/");
+          first = first.length === 1 ? `0${first}` : first;
+          second = second.length === 1 ? `0${second}` : second;
+          const restDate = rest.join("/");
+          return first + "/" + second + "/" + restDate;
+        })
       ),
     ];
+
     const tempCalendarItems = calendarItems.map((item, index) => {
       return {
         id: index,
@@ -37,14 +46,21 @@ export default function MainScreen() {
         color: randomColor({ luminosity: "dark" }),
       };
     });
+    console.log(tempCalendarItems);
     for (let i = 0; i < uniqueDates.length; i++) {
       result[uniqueDates[i].replaceAll("/", "-")] = [
-        ...tempCalendarItems.filter(
-          (item) =>
-            new Date(item.startAt).toLocaleDateString() === uniqueDates[i]
-        ),
+        ...tempCalendarItems.filter((item) => {
+          const unformattedDate = new Date(item.startAt).toLocaleDateString();
+          let [first, second, ...rest] = unformattedDate.split("/");
+          first = first.length === 1 ? `0${first}` : first;
+          second = second.length === 1 ? `0${second}` : second;
+          const restDate = rest.join("/");
+          const endResult = first + "/" + second + "/" + restDate;
+          return endResult === uniqueDates[i];
+        }),
       ];
     }
+    console.log(result);
     return result;
   }, [calendarItems]);
 
@@ -55,14 +71,26 @@ export default function MainScreen() {
       "Παρακάτω μπορείτε να καταχωρήσετε τις πληροφορίες του νέου ραντεβού για την ώρα που επιλέξατε."
     );
     setAction("create");
-
     const formatedStartDateString = `${new Date(
       data.day
     ).getUTCFullYear()}-${new Date(data.day).getUTCMonth()}-${
       new Date(data.day).getUTCDate() + 1
     }T${Math.floor(data.hour)}:00:00.000`;
-
     setStart(formatedStartDateString);
+    triggerButtonRef.current?.click();
+  }, []);
+
+  const handleExistingEventClick = useCallback((data: OnEventClickData) => {
+    setTitle("Τροποποίηση ραντεβού");
+    const text = data.summary;
+    const price = text.split("(")[1].split("€)")[0];
+    setPrice(Number(price));
+    const name = text.split(" (")[0];
+    setName(name);
+    setAction("edit");
+    setDescription(
+      "Παρακάτω μπορείτε να τροποποιήσετε τις πληροφορίες του ραντεβού που έχετε επιλέξει ή να το διαγράψετε."
+    );
     triggerButtonRef.current?.click();
   }, []);
 
@@ -89,7 +117,7 @@ export default function MainScreen() {
   return (
     <PageContent>
       <Calend
-        onEventClick={() => alert("existing event click")}
+        onEventClick={handleExistingEventClick}
         onNewEventClick={handleNewEventClick}
         events={formattedItems}
         initialDate={new Date().toISOString()}
@@ -98,7 +126,7 @@ export default function MainScreen() {
         disabledViews={[CalendarView.THREE_DAYS]}
         onPageChange={() => true}
       />
-      <Modal
+      <EventDialog
         start={start}
         title={title}
         description={description}

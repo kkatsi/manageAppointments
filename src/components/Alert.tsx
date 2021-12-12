@@ -3,6 +3,7 @@ import styled from "styled-components";
 import tw from "twin.macro";
 
 const AlertContainer = styled.div`
+  z-index: 99999999;
   ${tw`w-screen h-screen absolute top-0 left-0 bg-gray-900 bg-opacity-40 flex justify-center items-center`}
 `;
 
