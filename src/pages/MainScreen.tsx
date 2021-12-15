@@ -2,12 +2,12 @@ import React, { useCallback, useMemo, useRef, useState } from "react";
 import { useSelector } from "react-redux";
 import { RootState } from "../app/store";
 import PageContent from "../components/PageContent";
-import Calend, {
+import Kalend, {
   CalendarView,
   OnEventClickData,
   OnNewEventClickData,
-} from "calend"; // import component
-import "calend/dist/styles/index.css"; // import styles
+} from "kalend"; // import component
+import "kalend/dist/styles/index.css"; // import styles
 import randomColor from "randomcolor";
 import EventDialog from "../components/EventDialog";
 
@@ -17,6 +17,7 @@ export default function MainScreen() {
   const [name, setName] = useState<string>("");
   const [price, setPrice] = useState<number>(0);
   const [title, setTitle] = useState<string>("");
+  const [startDate, setStartDate] = useState<Date>(new Date());
   const [description, setDescription] = useState<string>("");
   const [action, setAction] = useState<string>("");
 
@@ -46,7 +47,6 @@ export default function MainScreen() {
         color: randomColor({ luminosity: "dark" }),
       };
     });
-    console.log(tempCalendarItems);
     for (let i = 0; i < uniqueDates.length; i++) {
       result[uniqueDates[i].replaceAll("/", "-")] = [
         ...tempCalendarItems.filter((item) => {
@@ -60,7 +60,6 @@ export default function MainScreen() {
         }),
       ];
     }
-    console.log(result);
     return result;
   }, [calendarItems]);
 
@@ -70,13 +69,21 @@ export default function MainScreen() {
     setDescription(
       "Παρακάτω μπορείτε να καταχωρήσετε τις πληροφορίες του νέου ραντεβού για την ώρα που επιλέξατε."
     );
+    setName("");
+    setPrice(0);
     setAction("create");
-    const formatedStartDateString = `${new Date(
-      data.day
-    ).getUTCFullYear()}-${new Date(data.day).getUTCMonth()}-${
-      new Date(data.day).getUTCDate() + 1
-    }T${Math.floor(data.hour)}:00:00.000`;
-    setStart(formatedStartDateString);
+    // const formatedStartDateString = `${new Date(
+    //   data.day
+    // ).getUTCFullYear()}-${new Date(data.day).getUTCMonth()}-${
+    //   new Date(data.day).getUTCDate() + 1
+    // }T${Math.floor(data.hour)}:00:00.000`;
+    // setStart(formatedStartDateString);
+    const hour = Math.floor(data.hour);
+    const formattedStartDateString = `${
+      hour < 10 ? `0${hour}:00` : `${hour}:00`
+    }`;
+    setStart(formattedStartDateString);
+    setStartDate(new Date(data.day));
     triggerButtonRef.current?.click();
   }, []);
 
@@ -91,6 +98,8 @@ export default function MainScreen() {
     setDescription(
       "Παρακάτω μπορείτε να τροποποιήσετε τις πληροφορίες του ραντεβού που έχετε επιλέξει ή να το διαγράψετε."
     );
+    setStartDate(new Date(data.startAt));
+    console.log(data);
     triggerButtonRef.current?.click();
   }, []);
 
@@ -116,7 +125,7 @@ export default function MainScreen() {
   // };
   return (
     <PageContent>
-      <Calend
+      <Kalend
         onEventClick={handleExistingEventClick}
         onNewEventClick={handleNewEventClick}
         events={formattedItems}
@@ -129,6 +138,8 @@ export default function MainScreen() {
       <EventDialog
         start={start}
         title={title}
+        startDate={startDate}
+        handleStartDateChange={(val: Date) => setStartDate(val)}
         description={description}
         price={price}
         action={action}

@@ -1,4 +1,10 @@
-import React, { RefObject, useCallback, useRef, useState } from "react";
+import React, {
+  RefObject,
+  useCallback,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import styled from "styled-components";
 import { IoCloseOutline } from "react-icons/io5";
 import * as DialogPrimitive from "@radix-ui/react-dialog";
@@ -7,7 +13,16 @@ import { useSelector } from "react-redux";
 import { insertCalendarEvent } from "../features/calendar/calendarSlice";
 import { RootState } from "../app/store";
 import { useAppDispatch } from "../app/hooks";
+import { IoPersonOutline } from "react-icons/io5";
+import { MdEuro, MdOutlineAccessTime } from "react-icons/md";
+import DatePicker, { registerLocale } from "react-datepicker";
 import Alert from "./Alert";
+import el from "date-fns/locale/el";
+import "react-datepicker/dist/react-datepicker.css";
+import TimePicker from "./TimePicker";
+import { intervalToDuration } from "date-fns";
+
+registerLocale("el", el);
 
 const StyledOverlay = styled(DialogPrimitive.Overlay)`
   inset: 0;
@@ -64,7 +79,7 @@ const DialogClose = DialogPrimitive.Close;
 
 // Your app...
 const Flex = styled.div`
-  ${tw`flex flex-col justify-center mt-12`}
+  ${tw`flex flex-col justify-center mt-6`}
 `;
 
 const Button = styled.button`
@@ -91,13 +106,12 @@ const IconButton = styled.button`
 
 const Fieldset = styled.fieldset`
   all: unset;
-  gap: 20px;
+  gap: 10px;
   ${tw`flex items-center mb-5`}
 `;
 
 const Label = styled.label`
   font-size: 15px;
-  width: 90px;
   ${tw`text-right text-blue-700`}
 `;
 
@@ -119,6 +133,8 @@ interface Props {
   title: string;
   description: string;
   price: number;
+  startDate: Date;
+  handleStartDateChange: (val: Date) => void;
   name: string;
   action: string;
   triggerButtonRef: RefObject<HTMLButtonElement>;
@@ -130,6 +146,8 @@ const EventDialog = ({
   description,
   price,
   name,
+  startDate,
+  handleStartDateChange,
   action,
   triggerButtonRef,
 }: Props) => {
@@ -137,6 +155,8 @@ const EventDialog = ({
   const [success, setSuccess] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [open, setOpen] = useState<boolean>(false);
+  const [startingTime, setStartingTime] = useState<string | null>(null);
+  const [endingTime, setEndingTime] = useState<string>("");
   const nameRef = useRef<HTMLInputElement>(null);
   const priceRef = useRef<HTMLInputElement>(null);
   const dispatch = useAppDispatch();
@@ -167,6 +187,27 @@ const EventDialog = ({
     },
     [dispatch, start, action]
   );
+  console.log(start);
+  const duration = useMemo(() => {
+    const durationObj = intervalToDuration({
+      start: new Date(
+        2021,
+        0o1,
+        0o1,
+        Number(startingTime?.split(":")[0]) || 0,
+        Number(startingTime?.split(":")[1]) || 0
+      ),
+      end: new Date(
+        2021,
+        0o1,
+        0o1,
+        Number(endingTime.split(":")[0]) || 0,
+        Number(endingTime.split(":")[1]) || 0
+      ),
+    });
+
+    return { hours: durationObj.hours, minutes: durationObj.minutes };
+  }, [startingTime, endingTime]);
   return (
     <>
       <Dialog open={open} onOpenChange={() => setOpen((prevOpen) => !prevOpen)}>
@@ -177,17 +218,70 @@ const EventDialog = ({
           <DialogTitle>{title}</DialogTitle>
           <DialogDescription>{description}</DialogDescription>
           <form action="" onSubmit={handleSubmit}>
+            <Fieldset style={{ gap: "5px", marginBottom: "0" }}>
+              <Label htmlFor="time">
+                <MdOutlineAccessTime size={22} style={{ marginLeft: "auto" }} />
+              </Label>
+              <DatePicker
+                locale="el"
+                selected={startDate}
+                className="text-blue-700 text-sm w-full bg-blue-50 rounded-md p-2"
+                onChange={(newDate: Date) => handleStartDateChange(newDate)}
+                dateFormat="EEEE, d MMM"
+              />
+              <TimePicker
+                value={
+                  startingTime && startingTime?.length > 0
+                    ? startingTime
+                    : start
+                }
+                handleChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
+                  setStartingTime(e.target.value)
+                }
+              />
+              <span className="text-blue-700">-</span>
+              <TimePicker
+                value={endingTime}
+                handleChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
+                  setEndingTime(e.target.value)
+                }
+              />
+            </Fieldset>
+            <Fieldset style={{ justifyContent: "center" }}>
+              <small className="text-blue-700 mx-auto">
+                {duration.hours !== 0
+                  ? duration.hours === 1
+                    ? duration.hours + " ώρα"
+                    : duration.hours + " ώρες"
+                  : ""}{" "}
+                {duration.hours !== 0 && duration.minutes !== 0 ? "και " : ""}
+                {duration.minutes !== 0 ? duration.minutes + " λεπτά" : ""}
+              </small>
+            </Fieldset>
+
             <Fieldset>
-              <Label htmlFor="name">Όνομα:</Label>
-              <Input id="name" defaultValue={name} ref={nameRef} required />
+              <Label htmlFor="name">
+                <IoPersonOutline size={22} style={{ marginLeft: "auto" }} />
+              </Label>
+              <Input
+                id="name"
+                autoFocus
+                defaultValue={name}
+                ref={nameRef}
+                placeholder="Προσθήκη ονόματος"
+                required
+              />
             </Fieldset>
             <Fieldset>
-              <Label htmlFor="username">Ποσό:</Label>
+              <Label htmlFor="username">
+                <MdEuro size={22} style={{ marginLeft: "auto" }} />
+              </Label>
               <Input
-                id="username"
-                defaultValue={price}
+                id="price"
+                defaultValue={price === 0 ? undefined : price}
                 type="number"
                 ref={priceRef}
+                placeholder="Προσθήκη ποσού"
                 required
               />
             </Fieldset>
@@ -215,7 +309,7 @@ const EventDialog = ({
                 )}
               </Button>
               {action === "edit" && (
-                <Button className="text-red-600">Διαγραφή</Button>
+                <Button className="text-red-600 mt-2">Διαγραφή</Button>
               )}
             </Flex>
           </form>
@@ -227,17 +321,32 @@ const EventDialog = ({
           </DialogClose>
         </DialogContent>
       </Dialog>
+
       <>
-        {success && (
+        {success && action === "create" && (
           <Alert
             title="Επιτυχημένη καταχώρηση ραντεβού"
             text="Το νέο σας ραντεβού έχει εμφανιστεί στο ημερολόγιο."
             onClose={() => setSuccess(false)}
           />
         )}
-        {error && (
+        {error && action === "create" && (
           <Alert
             title="Αποτυχημένη καταχώρηση ραντεβού"
+            text={errorMessage}
+            onClose={() => setError(false)}
+          />
+        )}
+        {success && action === "edit" && (
+          <Alert
+            title="Επιτυχημένη τροποποίηση ραντεβού"
+            text="Το ραντεβού έχει ενημερωθέι και οι νέες πληροφορίες εμφανίζονται στο ημερολόγιο."
+            onClose={() => setSuccess(false)}
+          />
+        )}
+        {error && action === "edit" && (
+          <Alert
+            title="Αποτυχημένη τροποποίηση ραντεβού"
             text={errorMessage}
             onClose={() => setError(false)}
           />

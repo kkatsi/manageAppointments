@@ -13,7 +13,7 @@ export async function getItems() {
       return response.result.items.map((item) => {
         return {
           start: item.start.dateTime || item.start.date || "",
-          end: item.start.dateTime || item.start.date || "",
+          end: item.end.dateTime || item.end.date || "",
           summary: item.summary,
           description: item.description,
         };
@@ -50,6 +50,6 @@ export async function insertEvent(
       };
     })
     .catch((error) => {
-      return { start: "", end: "", description: "", summary: "" };
+      return null;
     });
 }
