@@ -1,6 +1,7 @@
 import React, {
   RefObject,
   useCallback,
+  useEffect,
   useMemo,
   useRef,
   useState,
@@ -130,6 +131,7 @@ const Input = styled.input`
 
 interface Props {
   start: string;
+  end: string;
   title: string;
   description: string;
   price: number;
@@ -142,6 +144,7 @@ interface Props {
 
 const EventDialog = ({
   start,
+  end,
   title,
   description,
   price,
@@ -155,7 +158,7 @@ const EventDialog = ({
   const [success, setSuccess] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [open, setOpen] = useState<boolean>(false);
-  const [startingTime, setStartingTime] = useState<string | null>(null);
+  const [startingTime, setStartingTime] = useState<string>(start);
   const [endingTime, setEndingTime] = useState<string>("");
   const nameRef = useRef<HTMLInputElement>(null);
   const priceRef = useRef<HTMLInputElement>(null);
@@ -163,14 +166,36 @@ const EventDialog = ({
   const calendarLoading = useSelector(
     (state: RootState) => state.calendar.isLoading
   );
+  useEffect(() => {
+    setStartingTime(start);
+  }, [start]);
+
+  useEffect(() => {
+    setEndingTime(end);
+  }, [end]);
+
   const handleSubmit = useCallback(
     (e) => {
       e.preventDefault();
+      // console.log(startingTime, endingTime);
+      let endDate: Date = new Date();
+      //format startDate properly
+      const startHours = Number(startingTime?.split(":")[0]);
+      const startMinutes = Number(startingTime?.split(":")[1]);
+      startDate.setHours(startHours || 0);
+      startDate.setMinutes(startMinutes || 0);
+      //format endDate properly
+      const endHours = Number(endingTime?.split(":")[0]);
+      const endMinutes = Number(endingTime?.split(":")[1]);
+      endDate.setDate(startDate.getDate());
+      endDate.setHours(endHours || 0);
+      endDate.setMinutes(endMinutes || 0);
+      // console.log(startDate.toISOString());
       if (action === "create") {
         dispatch(
           insertCalendarEvent({
-            start: start,
-            end: "2021-12-21T19:00:00.000",
+            start: startDate.toISOString(),
+            end: endDate.toISOString(),
             description: priceRef.current?.value || "",
             summary: nameRef.current?.value || "",
           })
@@ -185,9 +210,9 @@ const EventDialog = ({
           });
       }
     },
-    [dispatch, start, action]
+    [dispatch, action, startDate, startingTime, endingTime]
   );
-  console.log(start);
+
   const duration = useMemo(() => {
     const durationObj = intervalToDuration({
       start: new Date(
@@ -229,23 +254,21 @@ const EventDialog = ({
                 onChange={(newDate: Date) => handleStartDateChange(newDate)}
                 dateFormat="EEEE, d MMM"
               />
-              <TimePicker
-                value={
-                  startingTime && startingTime?.length > 0
-                    ? startingTime
-                    : start
-                }
-                handleChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
-                  setStartingTime(e.target.value)
-                }
-              />
-              <span className="text-blue-700">-</span>
-              <TimePicker
-                value={endingTime}
-                handleChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
-                  setEndingTime(e.target.value)
-                }
-              />
+              <div className="ml-auto">
+                <TimePicker
+                  value={startingTime}
+                  handleChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
+                    setStartingTime(e.target.value)
+                  }
+                />
+                <span className="text-blue-700">-</span>
+                <TimePicker
+                  value={endingTime}
+                  handleChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
+                    setEndingTime(e.target.value)
+                  }
+                />
+              </div>
             </Fieldset>
             <Fieldset style={{ justifyContent: "center" }}>
               <small className="text-blue-700 mx-auto">

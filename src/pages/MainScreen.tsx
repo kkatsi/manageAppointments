@@ -14,6 +14,7 @@ import EventDialog from "../components/EventDialog";
 export default function MainScreen() {
   const calendarItems = useSelector((state: RootState) => state.calendar.value);
   const [start, setStart] = useState<string>("");
+  const [end, setEnd] = useState<string>("");
   const [name, setName] = useState<string>("");
   const [price, setPrice] = useState<number>(0);
   const [title, setTitle] = useState<string>("");
@@ -64,7 +65,7 @@ export default function MainScreen() {
   }, [calendarItems]);
 
   const handleNewEventClick = useCallback((data: OnNewEventClickData) => {
-    console.log(data.day, data.hour, new Date());
+    // console.log(data.day, data.hour, new Date());
     setTitle("Νέο ραντεβού");
     setDescription(
       "Παρακάτω μπορείτε να καταχωρήσετε τις πληροφορίες του νέου ραντεβού για την ώρα που επιλέξατε."
@@ -99,7 +100,23 @@ export default function MainScreen() {
       "Παρακάτω μπορείτε να τροποποιήσετε τις πληροφορίες του ραντεβού που έχετε επιλέξει ή να το διαγράψετε."
     );
     setStartDate(new Date(data.startAt));
-    console.log(data);
+    // console.log(new Date(data.startAt).getHours());
+    //format startTime
+    const startHours = new Date(data.startAt).getHours();
+    const startMinutes = new Date(data.startAt).getMinutes();
+    const startString = `${
+      startHours < 10
+        ? `0${startHours}:${startMinutes}`
+        : `${startHours}:${startMinutes}`
+    }`;
+    setStart(startString);
+    //format endTime
+    const endHours = new Date(data.endAt).getHours();
+    const endMinutes = new Date(data.endAt).getMinutes();
+    const endString = `${
+      endHours < 10 ? `0${endHours}:${endMinutes}` : `${endHours}:${endMinutes}`
+    }`;
+    setEnd(endString);
     triggerButtonRef.current?.click();
   }, []);
 
@@ -137,6 +154,7 @@ export default function MainScreen() {
       />
       <EventDialog
         start={start}
+        end={end}
         title={title}
         startDate={startDate}
         handleStartDateChange={(val: Date) => setStartDate(val)}

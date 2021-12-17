@@ -1,7 +1,11 @@
 {
   "compilerOptions": {
     "target": "es5",
-    "lib": ["dom", "dom.iterable", "esnext"],
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "esnext"
+    ],
     "allowJs": true,
     "skipLibCheck": true,
     "esModuleInterop": true,
@@ -16,10 +20,9 @@
     "noEmit": true,
     "jsx": "react-jsx",
     "noImplicitAny": false,
-    "downlevelIteration": true,
-    "paths": {
-      "@mui/styled-engine": ["./node_modules/@mui/styled-engine-sc"]
-    }
+    "downlevelIteration": true
   },
-  "include": ["src"]
+  "include": [
+    "src"
+  ]
 }

@@ -1,7 +1,6 @@
 import React, { useMemo } from "react";
 import styled from "styled-components";
 import tw from "twin.macro";
-import * as PopoverPrimitive from "@radix-ui/react-popover";
 
 const CustomSelect = styled.select`
   ${tw`p-2 bg-gray-50 rounded-md text-blue-700`}
