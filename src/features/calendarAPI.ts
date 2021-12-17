@@ -2,7 +2,8 @@ export async function getItems() {
   return await window.gapi.client.calendar.events
     .list({
       calendarId: "primary",
-      timeMin: new Date("01-06-2021").toISOString(),
+      // timeMin: new Date("01-06-2021").toISOString(),
+      timeMin: new Date("11-1-2021").toISOString(),
       showDeleted: false,
       singleEvents: true,
       maxResults: 100000,
@@ -84,6 +85,22 @@ export async function updateEvent(
         end: event.end.dateTime,
         description: description,
         summary: summary,
+        id: id,
+      };
+    })
+    .catch((error) => {
+      return null;
+    });
+}
+
+export async function deleteEvent(id: string) {
+  return await window.gapi.client.calendar.events
+    .delete({
+      calendarId: "primary",
+      eventId: id,
+    })
+    .then(() => {
+      return {
         id: id,
       };
     })

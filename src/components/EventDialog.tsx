@@ -12,6 +12,7 @@ import * as DialogPrimitive from "@radix-ui/react-dialog";
 import tw from "twin.macro";
 import { useSelector } from "react-redux";
 import {
+  deleteCalendarEvent,
   insertCalendarEvent,
   updateCalendarEvent,
 } from "../features/calendar/calendarSlice";
@@ -162,6 +163,8 @@ const EventDialog = ({
   const [error, setError] = useState(false);
   const [success, setSuccess] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
+  const [deleteSuccess, setDeleteSuccess] = useState(false);
+  const [deleteError, setDeleteError] = useState(false);
   const [open, setOpen] = useState<boolean>(false);
   const [startingTime, setStartingTime] = useState<string>(start);
   const [endingTime, setEndingTime] = useState<string>("");
@@ -240,6 +243,17 @@ const EventDialog = ({
     },
     [dispatch, action, startDate, startingTime, endingTime, id]
   );
+
+  const handleEventDelete = useCallback(() => {
+    dispatch(deleteCalendarEvent({ id: id }))
+      .then(() => {
+        setOpen(false);
+        setDeleteSuccess(true);
+      })
+      .catch(() => {
+        setDeleteError(true);
+      });
+  }, [id, dispatch]);
 
   const duration = useMemo(() => {
     const durationObj = intervalToDuration({
@@ -360,7 +374,13 @@ const EventDialog = ({
                 )}
               </Button>
               {action === "edit" && (
-                <Button className="text-red-600 mt-2">Διαγραφή</Button>
+                <Button
+                  type="button"
+                  className="text-red-600 mt-2"
+                  onClick={handleEventDelete}
+                >
+                  Διαγραφή
+                </Button>
               )}
             </Flex>
           </form>
@@ -400,6 +420,20 @@ const EventDialog = ({
             title="Αποτυχημένη τροποποίηση ραντεβού"
             text={errorMessage}
             onClose={() => setError(false)}
+          />
+        )}
+        {deleteSuccess && (
+          <Alert
+            title="Επιτυχημένη διαγραφή ραντεβού"
+            text="Το ραντεβού έχει διαγραφεί επιτυχώς και έχει αφερεθεί από το ημερολόγιο."
+            onClose={() => setDeleteSuccess(false)}
+          />
+        )}
+        {deleteError && (
+          <Alert
+            title="Αποτυχημένη διαγραφή ραντεβού"
+            text="Συνέβησε κάποιο σφάλμα κατά την διαγραφή του ραντεβού"
+            onClose={() => setDeleteError(false)}
           />
         )}
       </>

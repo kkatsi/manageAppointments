@@ -1,5 +1,10 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { getItems, insertEvent, updateEvent } from "../calendarAPI";
+import {
+  deleteEvent,
+  getItems,
+  insertEvent,
+  updateEvent,
+} from "../calendarAPI";
 
 export interface calendarItem {
   start: string;
@@ -65,6 +70,14 @@ export const updateCalendarEvent = createAsyncThunk(
   }
 );
 
+export const deleteCalendarEvent = createAsyncThunk(
+  "calendar/DeleteCalendarEvent",
+  async ({ id }: { id: string }) => {
+    const response = await deleteEvent(id);
+    return response;
+  }
+);
+
 export const calendarSlice = createSlice({
   name: "calendar",
   initialState: initialState,
@@ -113,10 +126,21 @@ export const calendarSlice = createSlice({
       })
       .addCase(updateCalendarEvent.rejected, (state) => {
         state.isLoading = false;
+      })
+      .addCase(deleteCalendarEvent.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(deleteCalendarEvent.fulfilled, (state, action) => {
+        console.log(action.payload);
+        state.isLoading = false;
+        state.value = state.value.filter(
+          (event) => event.id !== action.payload?.id
+        );
+      })
+      .addCase(deleteCalendarEvent.rejected, (state) => {
+        state.isLoading = false;
       });
   },
 });
-
-// export const {} = calendarSlice.actions;
 
 export default calendarSlice.reducer;
