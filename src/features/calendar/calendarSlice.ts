@@ -1,11 +1,12 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { getItems, insertEvent } from "../calendarAPI";
+import { getItems, insertEvent, updateEvent } from "../calendarAPI";
 
 export interface calendarItem {
   start: string;
   end: string;
   summary: string;
   description: string;
+  id: string;
 }
 
 export interface calendarState {
@@ -44,6 +45,26 @@ export const insertCalendarEvent = createAsyncThunk(
   }
 );
 
+export const updateCalendarEvent = createAsyncThunk(
+  "calendar/UpdateCalendarEvent",
+  async ({
+    start,
+    end,
+    description,
+    summary,
+    id,
+  }: {
+    start: string;
+    end: string;
+    description: string;
+    summary: string;
+    id: string;
+  }) => {
+    const response = await updateEvent(start, end, description, summary, id);
+    return response;
+  }
+);
+
 export const calendarSlice = createSlice({
   name: "calendar",
   initialState: initialState,
@@ -70,6 +91,27 @@ export const calendarSlice = createSlice({
         if (action.payload) state.value.push(action.payload);
       })
       .addCase(insertCalendarEvent.rejected, (state) => {
+        state.isLoading = false;
+      })
+      .addCase(updateCalendarEvent.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(updateCalendarEvent.fulfilled, (state, action) => {
+        console.log(action.payload);
+        state.isLoading = false;
+        state.value = state.value.map((event) =>
+          event.id === action.payload?.id
+            ? {
+                ...event,
+                start: action.payload.start,
+                end: action.payload.end,
+                description: action.payload.description,
+                summary: action.payload.summary,
+              }
+            : event
+        );
+      })
+      .addCase(updateCalendarEvent.rejected, (state) => {
         state.isLoading = false;
       });
   },

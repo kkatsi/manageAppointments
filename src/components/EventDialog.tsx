@@ -11,7 +11,10 @@ import { IoCloseOutline } from "react-icons/io5";
 import * as DialogPrimitive from "@radix-ui/react-dialog";
 import tw from "twin.macro";
 import { useSelector } from "react-redux";
-import { insertCalendarEvent } from "../features/calendar/calendarSlice";
+import {
+  insertCalendarEvent,
+  updateCalendarEvent,
+} from "../features/calendar/calendarSlice";
 import { RootState } from "../app/store";
 import { useAppDispatch } from "../app/hooks";
 import { IoPersonOutline } from "react-icons/io5";
@@ -132,6 +135,7 @@ const Input = styled.input`
 interface Props {
   start: string;
   end: string;
+  id: string;
   title: string;
   description: string;
   price: number;
@@ -145,6 +149,7 @@ interface Props {
 const EventDialog = ({
   start,
   end,
+  id,
   title,
   description,
   price,
@@ -166,6 +171,11 @@ const EventDialog = ({
   const calendarLoading = useSelector(
     (state: RootState) => state.calendar.isLoading
   );
+
+  useEffect(() => {
+    console.log(start, end);
+  }, [start, end]);
+
   useEffect(() => {
     setStartingTime(start);
   }, [start]);
@@ -208,9 +218,27 @@ const EventDialog = ({
             setError(true);
             setErrorMessage(error);
           });
+      } else {
+        dispatch(
+          updateCalendarEvent({
+            id: id,
+            start: startDate.toISOString(),
+            end: endDate.toISOString(),
+            description: priceRef.current?.value || "",
+            summary: nameRef.current?.value || "",
+          })
+        )
+          .then(() => {
+            setOpen(false);
+            setSuccess(true);
+          })
+          .catch((error) => {
+            setError(true);
+            setErrorMessage(error);
+          });
       }
     },
-    [dispatch, action, startDate, startingTime, endingTime]
+    [dispatch, action, startDate, startingTime, endingTime, id]
   );
 
   const duration = useMemo(() => {

@@ -16,6 +16,7 @@ export async function getItems() {
           end: item.end.dateTime || item.end.date || "",
           summary: item.summary,
           description: item.description,
+          id: item.id,
         };
       });
     })
@@ -30,11 +31,13 @@ export async function insertEvent(
   description: string,
   summary: string
 ) {
+  const newUniqueId = String(Date.now());
   const event = {
     start: { dateTime: start, timeZone: "Europe/Athens" },
     end: { dateTime: end, timeZone: "Europe/Athens" },
     description: description,
     summary: summary,
+    id: newUniqueId,
   };
   return await window.gapi.client.calendar.events
     .insert({
@@ -47,6 +50,41 @@ export async function insertEvent(
         end: event.end.dateTime,
         description: description,
         summary: summary,
+        id: newUniqueId,
+      };
+    })
+    .catch((error) => {
+      return null;
+    });
+}
+
+export async function updateEvent(
+  start: string,
+  end: string,
+  description: string,
+  summary: string,
+  id: string
+) {
+  const event = {
+    start: { dateTime: start, timeZone: "Europe/Athens" },
+    end: { dateTime: end, timeZone: "Europe/Athens" },
+    description: description,
+    summary: summary,
+    id: id,
+  };
+  return await window.gapi.client.calendar.events
+    .update({
+      calendarId: "primary",
+      eventId: id,
+      resource: event,
+    })
+    .then(() => {
+      return {
+        start: event.start.dateTime,
+        end: event.end.dateTime,
+        description: description,
+        summary: summary,
+        id: id,
       };
     })
     .catch((error) => {

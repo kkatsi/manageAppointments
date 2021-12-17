@@ -15,6 +15,7 @@ export default function MainScreen() {
   const calendarItems = useSelector((state: RootState) => state.calendar.value);
   const [start, setStart] = useState<string>("");
   const [end, setEnd] = useState<string>("");
+  const [id, setId] = useState<string>("");
   const [name, setName] = useState<string>("");
   const [price, setPrice] = useState<number>(0);
   const [title, setTitle] = useState<string>("");
@@ -41,7 +42,7 @@ export default function MainScreen() {
 
     const tempCalendarItems = calendarItems.map((item, index) => {
       return {
-        id: index,
+        id: item.id,
         startAt: item.start,
         endAt: item.end,
         summary: `${item.summary} (${item.description}€)`,
@@ -83,7 +84,11 @@ export default function MainScreen() {
     const formattedStartDateString = `${
       hour < 10 ? `0${hour}:00` : `${hour}:00`
     }`;
+    const formattedEndDateString = `${
+      hour + 1 < 10 ? `0${hour + 1}:00` : `${hour + 1}:00`
+    }`;
     setStart(formattedStartDateString);
+    setEnd(formattedEndDateString);
     setStartDate(new Date(data.day));
     triggerButtonRef.current?.click();
   }, []);
@@ -96,6 +101,7 @@ export default function MainScreen() {
     const name = text.split(" (")[0];
     setName(name);
     setAction("edit");
+    setId(data.id);
     setDescription(
       "Παρακάτω μπορείτε να τροποποιήσετε τις πληροφορίες του ραντεβού που έχετε επιλέξει ή να το διαγράψετε."
     );
@@ -106,15 +112,17 @@ export default function MainScreen() {
     const startMinutes = new Date(data.startAt).getMinutes();
     const startString = `${
       startHours < 10
-        ? `0${startHours}:${startMinutes}`
-        : `${startHours}:${startMinutes}`
+        ? `0${startHours}:${startMinutes === 0 ? `00` : startMinutes}`
+        : `${startHours}:${startMinutes === 0 ? `00` : startMinutes}`
     }`;
     setStart(startString);
     //format endTime
     const endHours = new Date(data.endAt).getHours();
     const endMinutes = new Date(data.endAt).getMinutes();
     const endString = `${
-      endHours < 10 ? `0${endHours}:${endMinutes}` : `${endHours}:${endMinutes}`
+      endHours < 10
+        ? `0${endHours}:${endMinutes === 0 ? `00` : endMinutes}`
+        : `${endHours}:${endMinutes === 0 ? `00` : endMinutes}`
     }`;
     setEnd(endString);
     triggerButtonRef.current?.click();
@@ -155,6 +163,7 @@ export default function MainScreen() {
       <EventDialog
         start={start}
         end={end}
+        id={id}
         title={title}
         startDate={startDate}
         handleStartDateChange={(val: Date) => setStartDate(val)}
