@@ -74,12 +74,6 @@ export default function MainScreen() {
     setName("");
     setPrice(0);
     setAction("create");
-    // const formatedStartDateString = `${new Date(
-    //   data.day
-    // ).getUTCFullYear()}-${new Date(data.day).getUTCMonth()}-${
-    //   new Date(data.day).getUTCDate() + 1
-    // }T${Math.floor(data.hour)}:00:00.000`;
-    // setStart(formatedStartDateString);
     const hour = Math.floor(data.hour);
     const formattedStartDateString = `${
       hour < 10 ? `0${hour}:00` : `${hour}:00`

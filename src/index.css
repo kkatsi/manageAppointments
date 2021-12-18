@@ -19,6 +19,15 @@ body {
   padding-left: 35px !important;
 }
 
+.react-datepicker__year-wrapper {
+  max-width: 205px !important;
+}
+
+.react-datepicker__year-text--selected,
+.react-datepicker__year-text--keyboard-selected {
+  background-color: rgb(244, 114, 182) !important;
+}
+
 @media (max-width: 450px) {
   .Kalend__CalendarDesktopNavigation__buttons
     .Kalend__ButtonIcon__container:nth-last-child(2) {
