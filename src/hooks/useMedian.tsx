@@ -67,7 +67,7 @@ export default function useMedian() {
       return findMedian(valuesArray);
     }
     return 0;
-  }, [totalData]);
+  }, [totalData, findMedian]);
 
   useEffect(() => {
     if (!loading) setMedian(calcMedian);

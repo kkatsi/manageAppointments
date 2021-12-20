@@ -16,7 +16,6 @@ import Kalend, {
 import "kalend/dist/styles/index.css"; // import styles
 import randomColor from "randomcolor";
 import EventDialog from "../components/EventDialog";
-import Div100vh from "react-div-100vh";
 import { getCalendarItems } from "../features/calendar/calendarSlice";
 
 export default function MainScreen() {
@@ -34,7 +33,7 @@ export default function MainScreen() {
 
   useEffect(() => {
     dispatch(getCalendarItems({}));
-  }, []);
+  }, [dispatch]);
 
   const triggerButtonRef = useRef<HTMLButtonElement>(null);
 

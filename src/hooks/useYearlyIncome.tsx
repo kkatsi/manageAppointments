@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useSelector } from "react-redux";
 import { RootState } from "../app/store";
 
@@ -91,7 +91,7 @@ export default function useYearlyIncome(year: string) {
       return finalObject;
     }
     return {};
-  }, [totalData, year]);
+  }, [totalData]);
 
   useEffect(() => {
     if (!loading) setYearly(calcYearly);

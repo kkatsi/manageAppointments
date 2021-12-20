@@ -86,15 +86,15 @@ export default function WeeksofMonthStat() {
         {month}
       </h2>
       <Stat>
-        <span>Μέσος όρος κερδών ανά ημέρα</span>
+        <span>Μέσος όρος εσόδων ανά ημέρα</span>
         <ShadowedText>{median}€</ShadowedText>
       </Stat>
       <Stat>
-        <span>Περισσότερα κέρδη σε μια μέρα</span>
+        <span>Περισσότερα έσοδα σε μια μέρα</span>
         <ShadowedText>{best}€</ShadowedText>
       </Stat>
       <Stat>
-        <span>Λιγότερα κέρδη σε μια μέρα</span>
+        <span>Λιγότερα έσοδα σε μια μέρα</span>
         <ShadowedText>{worst}€</ShadowedText>
       </Stat>
       <LineChart data={graphData} />

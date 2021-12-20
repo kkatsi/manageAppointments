@@ -22,12 +22,12 @@ const ShadowedText = styled.span`
 `;
 
 export default function Header({ year }: { year: string }) {
-  const { totalYearly } = useTotalIncome();
+  const { totalIncome } = useTotalIncome();
   return (
     <HeaderContainer>
       <CongratsText>Συγχαρητήρια!</CongratsText>
       <TotalIncome>
-        Έχεις βγάλει <ShadowedText>{totalYearly}€</ShadowedText> μέσα στο {year}
+        Έχεις βγάλει <ShadowedText>{totalIncome}€</ShadowedText> μέσα στο {year}
         !
       </TotalIncome>
     </HeaderContainer>

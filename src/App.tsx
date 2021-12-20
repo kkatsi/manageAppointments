@@ -6,7 +6,6 @@ import { Routes, Route } from "react-router-dom";
 import Login from "./pages/Login";
 import Home from "./pages/Home";
 import PrivateRoute from "./components/PrivateRoute";
-import { getCalendarItems } from "./features/calendar/calendarSlice";
 
 function App() {
   const dispatch = useDispatch();

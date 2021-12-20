@@ -2,9 +2,7 @@ import React from "react";
 import "react-vis/dist/style.css";
 import {
   XYPlot,
-  AreaSeries,
   LineSeries,
-  VerticalGridLines,
   HorizontalGridLines,
   XAxis,
   YAxis,
