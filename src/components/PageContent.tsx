@@ -4,17 +4,36 @@ import Div100vh from "react-div-100vh";
 interface Props {
   centerX?: boolean;
   centerY?: boolean;
+  div100?: boolean;
   children: JSX.Element[] | JSX.Element;
 }
 
-export default function PageContent({ centerX, centerY, children }: Props) {
+export default function PageContent({
+  div100,
+  centerX,
+  centerY,
+  children,
+}: Props) {
   return (
-    <Div100vh
-      className={`${centerX ? "items-center" : "items-start"} ${
-        centerY ? "justify-center" : "justify-start"
-      } py-20 mx-auto container flex-col flex px-3`}
-    >
-      {children}
-    </Div100vh>
+    <>
+      {!div100 && (
+        <div
+          className={`${centerX ? "items-center" : "items-start"} ${
+            centerY ? "justify-center" : "justify-start"
+          } pt-20 pb-10 mx-auto container flex-col flex px-5 min-h-screen `}
+        >
+          {children}
+        </div>
+      )}
+      {div100 && (
+        <Div100vh
+          className={`${centerX ? "items-center" : "items-start"} ${
+            centerY ? "justify-center" : "justify-start"
+          } pt-20 pb-10 mx-auto container flex-col flex px-5 min-h-screen `}
+        >
+          {children}
+        </Div100vh>
+      )}
+    </>
   );
 }

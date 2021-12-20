@@ -1,12 +1,15 @@
-import React from "react";
+import React, { useCallback } from "react";
 import styled from "styled-components";
 import Div100vh from "react-div-100vh";
 import tw from "twin.macro";
 import { RootState } from "../app/store";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { Link, LinkProps, useResolvedPath, useMatch } from "react-router-dom";
-import { FiInfo, FiInbox } from "react-icons/fi";
-import { IoSettings } from "react-icons/io5";
+import { IoIosCalendar } from "react-icons/io";
+import { IoStatsChartOutline } from "react-icons/io5";
+import { MdArrowForwardIos } from "react-icons/md";
+import { FaRegMoneyBillAlt } from "react-icons/fa";
+import { gapiLogOut } from "../features/user/userSlice";
 
 const SideBarContainer = styled(Div100vh)`
   width: 250px;
@@ -54,12 +57,28 @@ const CustomMenuLink = ({ children, to, ...props }: LinkProps) => {
   );
 };
 
-const BottomContainer = styled.div`
-  ${tw`w-full flex flex-col mt-auto`}
+const SettingButton = styled.button`
+  max-width: 400px;
+  ${tw`w-full mx-auto flex justify-between items-center text-left font-bold mb-5 bg-transparent`}
 `;
 
-const BottomLink = styled(Link)`
-  ${tw`w-full flex items-center justify-start px-3 py-2 text-gray-600 bg-gray-100 rounded-md`}
+const LogoutButton = ({
+  action,
+  children,
+}: {
+  action: () => void;
+  children: string | JSX.Element | JSX.Element[];
+}) => {
+  return (
+    <SettingButton onClick={action} className="text-pink-600">
+      {children}
+      <MdArrowForwardIos size={18} className="font-bold" />
+    </SettingButton>
+  );
+};
+
+const BottomContainer = styled.div`
+  ${tw`w-full flex flex-col mt-auto`}
 `;
 
 interface Props {
@@ -71,7 +90,10 @@ export default function Sidebar({ handleMenu }: Props) {
     (state: RootState) => state.user.value.photoURL
   );
   const name = useSelector((state: RootState) => state.user.value.displayName);
-
+  const dispatch = useDispatch();
+  const handleLogout = useCallback(() => {
+    dispatch(gapiLogOut());
+  }, [dispatch]);
   return (
     <SideBarContainer>
       <ProfileImage src={profilePic} />
@@ -79,21 +101,25 @@ export default function Sidebar({ handleMenu }: Props) {
       <Menu>
         <MenuItem>
           <CustomMenuLink to="/" onClick={handleMenu}>
-            <FiInbox size={18} className="mr-2" />
-            Tasks
+            <IoIosCalendar size={18} className="mr-2" />
+            Ραντεβού
           </CustomMenuLink>
         </MenuItem>
         <MenuItem>
-          <CustomMenuLink to="/about" onClick={handleMenu}>
-            <FiInfo size={18} className="mr-2" />
-            About
+          <CustomMenuLink to="/income" onClick={handleMenu}>
+            <FaRegMoneyBillAlt size={18} className="mr-2" />
+            Έσοδα
+          </CustomMenuLink>
+        </MenuItem>
+        <MenuItem>
+          <CustomMenuLink to="/stats" onClick={handleMenu}>
+            <IoStatsChartOutline size={18} className="mr-2" />
+            Στατιστικά
           </CustomMenuLink>
         </MenuItem>
       </Menu>
       <BottomContainer>
-        <BottomLink to="/settings" onClick={handleMenu}>
-          <IoSettings size={18} className="mr-2" /> Ρυθμίσεις
-        </BottomLink>
+        <LogoutButton action={handleLogout}>Αποσύνδεση</LogoutButton>
       </BottomContainer>
     </SideBarContainer>
   );

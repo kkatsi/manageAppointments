@@ -17,7 +17,7 @@ function App() {
         .currentUser.get()
         .getBasicProfile();
       console.log(user, isSignedIn);
-      if (isSignedIn && user)
+      if (isSignedIn && user) {
         dispatch(
           setCurrentUser({
             displayName: user.getName(),
@@ -25,7 +25,7 @@ function App() {
             photoURL: user.getImageUrl(),
           })
         );
-      else dispatch(setCurrentUser(initialState.value));
+      } else dispatch(setCurrentUser(initialState.value));
     },
     [dispatch]
   );
@@ -42,9 +42,11 @@ function App() {
           scope: "https://www.googleapis.com/auth/calendar",
         })
         .then(() => {
-          alert("client loaded");
           updateSigninStatus(gapi.auth2.getAuthInstance().isSignedIn.get());
           gapi.auth2.getAuthInstance().isSignedIn.listen(updateSigninStatus);
+          gapi.client.load("calendar", "v3", async () => {
+            console.log("calendar loaded");
+          });
         });
     });
   }, [updateSigninStatus]);
@@ -61,11 +63,6 @@ function App() {
   useEffect(() => {
     insertGapiScript();
   }, [insertGapiScript]);
-
-  //   // gapi.client.load("calendar", "v3", () => {
-  //   //   console.log("calendar loaded");
-  //   // });
-  // }, [updateSigninStatus]);
 
   return (
     <>
