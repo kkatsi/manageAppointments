@@ -26,7 +26,6 @@ function App() {
             photoURL: user.getImageUrl(),
           })
         );
-        dispatch(getCalendarItems());
       } else dispatch(setCurrentUser(initialState.value));
     },
     [dispatch]

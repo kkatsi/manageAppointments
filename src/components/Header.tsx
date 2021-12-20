@@ -21,13 +21,14 @@ const ShadowedText = styled.span`
   ${tw`text-xl font-semibold`}
 `;
 
-export default function Header() {
-  const { totalIncome } = useTotalIncome();
+export default function Header({ year }: { year: string }) {
+  const { totalYearly } = useTotalIncome();
   return (
     <HeaderContainer>
       <CongratsText>Συγχαρητήρια!</CongratsText>
       <TotalIncome>
-        Έχεις βγάλει <ShadowedText>{totalIncome}€</ShadowedText> μέχρι σήμερα!
+        Έχεις βγάλει <ShadowedText>{totalYearly}€</ShadowedText> μέσα στο {year}
+        !
       </TotalIncome>
     </HeaderContainer>
   );

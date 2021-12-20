@@ -3,12 +3,13 @@ import { useSelector } from "react-redux";
 import { RootState } from "../app/store";
 
 export default function useTotalIncome() {
-  const [totalIncome, setTotal] = useState(0);
+  //   const [totalIncome, setTotal] = useState(0);
+  const [totalYearly, setTotal] = useState(0);
+
   const totalData = useSelector((state: RootState) => state.calendar.value);
   const loading = useSelector((state: RootState) => state.calendar.isLoading);
 
-  const calcTotal = useMemo(() => {
-    console.log(totalData);
+  const calcTotalYear = useMemo(() => {
     return totalData.length > 0
       ? totalData
           .map((event) => Number(event.description))
@@ -17,8 +18,8 @@ export default function useTotalIncome() {
   }, [totalData]);
 
   useEffect(() => {
-    if (!loading) setTotal(Number(calcTotal));
-  }, [totalIncome, loading, calcTotal]);
+    if (!loading) setTotal(calcTotalYear);
+  }, [loading, calcTotalYear]);
 
-  return { totalIncome };
+  return { totalYearly };
 }

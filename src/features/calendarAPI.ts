@@ -1,12 +1,15 @@
-export async function getItems() {
+export async function getItems(minTime?: string, maxTime?: string) {
   return await window.gapi.client.calendar.events
     .list({
       calendarId: "primary",
       // timeMin: new Date("01-06-2021").toISOString(),
-      timeMin: new Date("1-1-2020").toISOString(),
+      timeMin: !minTime
+        ? new Date("1-1-2020").toISOString()
+        : new Date(minTime).toISOString(),
+      timeMax: !maxTime ? undefined : new Date(maxTime).toISOString(),
       showDeleted: false,
       singleEvents: true,
-      maxResults: 100000,
+      maxResults: 1000000,
       orderBy: "startTime",
     })
     .then(function (response) {

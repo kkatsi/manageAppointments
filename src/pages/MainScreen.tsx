@@ -1,5 +1,11 @@
-import React, { useCallback, useMemo, useRef, useState } from "react";
-import { useSelector } from "react-redux";
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../app/store";
 import PageContent from "../components/PageContent";
 import Kalend, {
@@ -10,6 +16,8 @@ import Kalend, {
 import "kalend/dist/styles/index.css"; // import styles
 import randomColor from "randomcolor";
 import EventDialog from "../components/EventDialog";
+import Div100vh from "react-div-100vh";
+import { getCalendarItems } from "../features/calendar/calendarSlice";
 
 export default function MainScreen() {
   const calendarItems = useSelector((state: RootState) => state.calendar.value);
@@ -22,6 +30,11 @@ export default function MainScreen() {
   const [startDate, setStartDate] = useState<Date>(new Date());
   const [description, setDescription] = useState<string>("");
   const [action, setAction] = useState<string>("");
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(getCalendarItems({}));
+  }, []);
 
   const triggerButtonRef = useRef<HTMLButtonElement>(null);
 
@@ -46,7 +59,7 @@ export default function MainScreen() {
         startAt: item.start,
         endAt: item.end,
         summary: `${item.summary} (${item.description}€)`,
-        color: randomColor({ luminosity: "dark" }),
+        color: randomColor({ luminosity: "dark", hue: "pink" }),
       };
     });
     for (let i = 0; i < uniqueDates.length; i++) {
@@ -143,7 +156,7 @@ export default function MainScreen() {
   //   ],
   // };
   return (
-    <PageContent>
+    <PageContent div100>
       <Kalend
         onEventClick={handleExistingEventClick}
         onNewEventClick={handleNewEventClick}

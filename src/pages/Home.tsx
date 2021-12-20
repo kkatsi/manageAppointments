@@ -11,9 +11,11 @@ import Income from "./Income";
 // import ChangeName from "./ChangeName";
 // import ChangePassword from "./ChangePassword";
 import MainScreen from "./MainScreen";
+import Stats from "./Stats";
+import WeeksofMonthStat from "./WeeksofMonthStat";
 // import Settings from "./Settings";
 
-const MainContainer = styled(Div100vh)`
+const MainContainer = styled.div`
   ${tw`bg-gray-100`}
 `;
 
@@ -38,6 +40,8 @@ export default function Home() {
         <Route path="" element={<MainScreen />} />
         <Route path="about" element={<About />} />
         <Route path="income" element={<Income />} />
+        <Route path="stats" element={<Stats />} />
+        <Route path="stats/:year/:month" element={<WeeksofMonthStat />} />
         {/* <Route path="settings" element={<Settings />} />
         <Route path="settings/change-name" element={<ChangeName />} />
         <Route path="settings/change-email" element={<ChangeEmail />} />

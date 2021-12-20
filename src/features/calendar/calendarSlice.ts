@@ -26,8 +26,8 @@ export const initialState: calendarState = {
 
 export const getCalendarItems = createAsyncThunk(
   "calendar/GetCalendarItems",
-  async () => {
-    const response = await getItems();
+  async ({ max, min }: { max?: string; min?: string }) => {
+    const response = await getItems(min ?? undefined, max ?? undefined);
     return response;
   }
 );

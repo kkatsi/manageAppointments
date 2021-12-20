@@ -31,7 +31,6 @@ export default function LoadingScreen() {
               fillRule="evenodd"
             />
           </svg>
-
           <div>Loading ...</div>
         </div>
       </Div100vh>
