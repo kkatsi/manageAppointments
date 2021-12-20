@@ -46,7 +46,7 @@ export default function useBestYear() {
       console.log(result);
       const temp: number[] = [];
       for (const [key, value] of Object.entries(result)) {
-        console.log(value);
+        console.log(key);
         if (Array.isArray(value)) {
           const val = value
             .map((event) => Number(event.description))
