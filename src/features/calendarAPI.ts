@@ -1,4 +1,7 @@
 export async function getItems(minTime?: string, maxTime?: string) {
+  function isNumeric(value: string): boolean {
+    return /^[0-9]+$/.test(value);
+  }
   return await window.gapi.client.calendar.events
     .list({
       calendarId: "primary",
@@ -14,15 +17,26 @@ export async function getItems(minTime?: string, maxTime?: string) {
     })
     .then(function (response) {
       // return response.result.items;
-      return response.result.items.map((item) => {
+      const clearEvents = response.result.items.map((item) => {
+        if (isNumeric(item.description))
+          return {
+            start: item.start.dateTime || item.start.date || "",
+            end: item.end.dateTime || item.end.date || "",
+            summary: item.summary,
+            description: item.description,
+            id: item.id,
+          };
         return {
-          start: item.start.dateTime || item.start.date || "",
-          end: item.end.dateTime || item.end.date || "",
-          summary: item.summary,
-          description: item.description,
-          id: item.id,
+          start: "",
+          end: "",
+          summary: "",
+          description: "",
+          id: "",
         };
       });
+      const result = clearEvents.filter((item) => item.start.length);
+      return result;
+      // return
     })
     .catch((error) => {
       return [];
