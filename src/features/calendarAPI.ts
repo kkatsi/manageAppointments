@@ -39,6 +39,7 @@ export async function getItems(minTime?: string, maxTime?: string) {
       // return
     })
     .catch((error) => {
+      alert(error);
       return [];
     });
 }
