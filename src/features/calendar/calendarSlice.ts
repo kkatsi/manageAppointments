@@ -85,14 +85,16 @@ export const calendarSlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(getCalendarItems.pending, (state) => {
+        // console.log(state);
         state.isLoading = true;
       })
       .addCase(getCalendarItems.fulfilled, (state, action) => {
-        console.log(action.payload);
+        console.log(state, action.payload);
         state.isLoading = false;
         state.value = action.payload;
       })
-      .addCase(getCalendarItems.rejected, (state) => {
+      .addCase(getCalendarItems.rejected, (state, action) => {
+        console.log(action.error);
         state.isLoading = false;
       })
       .addCase(insertCalendarEvent.pending, (state) => {
