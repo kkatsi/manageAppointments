@@ -1,16 +1,37 @@
 function isNumeric(value: string): boolean {
   return /^[0-9]+$/.test(value);
 }
+
+function formatDate(value: string): Date {
+  let date = new Date(value);
+
+  // In case its IOS, parse the fulldate parts and re-create the date object.
+  if (Number.isNaN(date.getMonth())) {
+    let arr = value.split(/[- :]/);
+    date = new Date(
+      Number(arr[0]),
+      Number(arr[1]) - 1,
+      Number(arr[2]),
+      Number(arr[3]),
+      Number(arr[4]),
+      Number(arr[5])
+    );
+    return date;
+  }
+  return date;
+}
 export async function getItems(minTime?: string, maxTime?: string) {
-  // console.log(new Date("01-01-2021").toISOString());
+  const min = formatDate(minTime || "");
+  const max = formatDate(maxTime || "");
+
   return window.gapi.client.calendar.events
     .list({
       calendarId: "primary",
       // timeMin: new Date().toISOString(),
       timeMin: !minTime
-        ? new Date("2020-1-1").toISOString()
-        : new Date(minTime).toISOString(),
-      timeMax: !maxTime ? undefined : new Date(maxTime).toISOString(),
+        ? formatDate("2020-1-1").toISOString()
+        : min.toISOString(),
+      timeMax: !maxTime ? undefined : max.toISOString(),
       showDeleted: false,
       singleEvents: true,
       maxResults: 1000000,
