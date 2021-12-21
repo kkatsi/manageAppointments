@@ -68,8 +68,8 @@ export default function WeeksofMonthStat() {
   useEffect(() => {
     dispatch(
       getCalendarItems({
-        min: `${monthNumber}-1-${year}`,
-        max: `${monthNumber}-31-${year}`,
+        min: `${year}-${monthNumber}-1`,
+        max: `${year}-${monthNumber}-31`,
       })
     );
   }, [dispatch, monthNumber, year]);
