@@ -112,7 +112,7 @@ const IconButton = styled.button`
 const Fieldset = styled.fieldset`
   all: unset;
   gap: 10px;
-  ${tw`flex items-center mb-5`}
+  ${tw`flex items-center mb-3`}
 `;
 
 const Label = styled.label`
@@ -312,7 +312,7 @@ const EventDialog = ({
                 />
               </div>
             </Fieldset>
-            <Fieldset style={{ justifyContent: "center" }}>
+            <Fieldset style={{ justifyContent: "center", marginBottom: 0 }}>
               <small className="text-blue-700 mx-auto">
                 {duration.hours !== 0
                   ? duration.hours === 1

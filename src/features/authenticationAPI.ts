@@ -18,7 +18,9 @@ import { auth } from "../firebase";
 
 export async function gapiLog() {
   const googleAuth = gapi.auth2.getAuthInstance();
-  const googleUser = await googleAuth.signIn();
+  const googleUser = await googleAuth.signIn({
+    scope: "https://www.googleapis.com/auth/calendar",
+  });
   return googleUser;
 }
 

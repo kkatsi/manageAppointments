@@ -38,7 +38,7 @@ export default function Login() {
     dispatch(gapiLogin());
   }, [dispatch]);
   return (
-    <PageContent centerX={true} centerY={true}>
+    <PageContent centerX={true} centerY={true} div100>
       <Background src={require("../assets/bg-light.webp").default} />
       <Header>Καλώς Ορίσατε.</Header>
       {/* <Form onSubmit={handleLogin}>

@@ -3,7 +3,7 @@ import styled from "styled-components";
 import tw from "twin.macro";
 
 const CustomSelect = styled.select`
-  ${tw`p-2 bg-gray-50 rounded-md text-blue-700`}
+  ${tw`py-2 px-1 bg-gray-50 rounded-md text-blue-700`}
 `;
 
 interface Props {
