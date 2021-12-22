@@ -155,17 +155,19 @@ export default function MainScreen() {
   //   ],
   // };
   return (
-    <PageContent div100>
-      <Kalend
-        onEventClick={handleExistingEventClick}
-        onNewEventClick={handleNewEventClick}
-        events={formattedItems}
-        initialDate={new Date().toISOString()}
-        hourHeight={60}
-        initialView={CalendarView.MONTH}
-        disabledViews={[CalendarView.THREE_DAYS]}
-        onPageChange={() => true}
-      />
+    <>
+      <PageContent div100>
+        <Kalend
+          onEventClick={handleExistingEventClick}
+          onNewEventClick={handleNewEventClick}
+          events={formattedItems}
+          initialDate={new Date().toISOString()}
+          hourHeight={60}
+          initialView={CalendarView.MONTH}
+          disabledViews={[CalendarView.THREE_DAYS]}
+          onPageChange={() => true}
+        />
+      </PageContent>
       <EventDialog
         start={start}
         end={end}
@@ -179,6 +181,6 @@ export default function MainScreen() {
         name={name}
         triggerButtonRef={triggerButtonRef}
       />
-    </PageContent>
+    </>
   );
 }

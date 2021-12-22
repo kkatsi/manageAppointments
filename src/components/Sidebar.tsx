@@ -95,7 +95,7 @@ export default function Sidebar({ handleMenu }: Props) {
     dispatch(gapiLogOut());
   }, [dispatch]);
   return (
-    <SideBarContainer>
+    <SideBarContainer className="sidebar">
       <ProfileImage src={profilePic} />
       <Name className="dark:text-white">{name}</Name>
       <Menu>

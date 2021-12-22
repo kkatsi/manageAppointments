@@ -60,8 +60,9 @@
       "purpose": "maskable"
     }
   ],
-  "start_url": "/",
+  "start_url": "https://manageappointments.netlify.app/",
   "display": "standalone",
   "theme_color": "#000000",
-  "background_color": "#ffffff"
+  "background_color": "#ffffff",
+  "scope": "https://manageappointments.netlify.app/"
 }
