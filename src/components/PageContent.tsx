@@ -20,7 +20,7 @@ export default function PageContent({
         <div
           className={`${centerX ? "items-center" : "items-start"} ${
             centerY ? "justify-center" : "justify-start"
-          } pt-20 pb-10 mx-auto container flex-col flex px-5 min-h-screen `}
+          } pt-20 pb-10 mx-auto container flex-col flex px-5 min-h-screen content`}
         >
           {children}
         </div>
@@ -29,7 +29,7 @@ export default function PageContent({
         <Div100vh
           className={`${centerX ? "items-center" : "items-start"} ${
             centerY ? "justify-center" : "justify-start"
-          } pt-20 pb-10 mx-auto container flex-col flex px-5 min-h-screen `}
+          } pt-20 pb-10 mx-auto container flex-col flex px-5 min-h-screen content`}
         >
           {children}
         </Div100vh>

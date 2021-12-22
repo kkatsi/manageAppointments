@@ -113,7 +113,7 @@ export default function Income() {
             variants={variants}
             initial="hidden"
             animate="show"
-            className="flex flex-col w-full h-full overflow-y-auto"
+            className="flex flex-col w-full"
           >
             {Object.keys(yearlyIncome).map((key, index) => {
               return (
