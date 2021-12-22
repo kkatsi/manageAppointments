@@ -36,23 +36,23 @@ export default function WeeksofMonthStat() {
   const monthNumber = useMemo(() => {
     switch (month) {
       case "Ιανουάριος":
-        return "1";
+        return "01";
       case "Φεβρουάριος":
-        return "2";
+        return "02";
       case "Μάρτιος":
-        return "3";
+        return "03";
       case "Απρίλιος":
-        return "4";
+        return "04";
       case "Μάιος":
-        return "5";
+        return "05";
       case "Ιούνιος":
-        return "6";
+        return "06";
       case "Ιούλιος":
-        return "7";
+        return "07";
       case "Αύγουστος":
-        return "8";
+        return "08";
       case "Σεπτέμβριος":
-        return "9";
+        return "09";
       case "Οκτώβριος":
         return "10";
       case "Νοέμβριος":
@@ -68,8 +68,8 @@ export default function WeeksofMonthStat() {
   useEffect(() => {
     dispatch(
       getCalendarItems({
-        min: `${year}-${monthNumber}-1`,
-        max: `${year}-${monthNumber}-31`,
+        min: `${year}-${monthNumber}-01 00:00:00`,
+        max: `${year}-${monthNumber}-31 23:59:59`,
       })
     );
   }, [dispatch, monthNumber, year]);
