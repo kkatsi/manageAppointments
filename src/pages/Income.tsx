@@ -85,8 +85,8 @@ export default function Income() {
   useEffect(() => {
     dispatch(
       getCalendarItems({
-        min: `${year}-1-1`,
-        max: `${year}-12-31`,
+        min: `${year}-01-01 00:00:00`,
+        max: `${year}-12-31 23:59:59`,
       })
     );
   }, [dispatch, year]);

@@ -29,7 +29,7 @@ export async function getItems(minTime?: string, maxTime?: string) {
       calendarId: "primary",
       // timeMin: new Date().toISOString(),
       timeMin: !minTime
-        ? formatDate("2020-1-1").toISOString()
+        ? formatDate("2020-01-01 00:00:00").toISOString()
         : min.toISOString(),
       timeMax: !maxTime ? undefined : max.toISOString(),
       showDeleted: false,
