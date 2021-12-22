@@ -163,7 +163,7 @@ export default function MainScreen() {
           events={formattedItems}
           initialDate={new Date().toISOString()}
           hourHeight={60}
-          initialView={CalendarView.MONTH}
+          initialView={CalendarView.WEEK}
           disabledViews={[CalendarView.THREE_DAYS]}
           onPageChange={() => true}
         />
