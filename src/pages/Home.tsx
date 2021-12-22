@@ -25,6 +25,33 @@ export default function Home() {
     setOpen((prevState: boolean) => !prevState);
   }, []);
 
+  const handleMenuClose = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
+    // console.log(e.target);
+    if (
+      document.querySelector(".sidebar")?.contains(e.target as Node) ||
+      document.querySelector(".menu-button")?.contains(e.target as Node)
+    ) {
+      return;
+    } else {
+      // Clicked outside the box
+      setOpen(false);
+    }
+  }, []);
+
+  // useEffect(() => {
+  //   window.addEventListener('click', function(e){
+  //     if (document.querySelector('.sidebar')?.contains(e.target)){
+  //       return
+  //     } else{
+  //       // Clicked outside the box
+
+  //     }
+  //   });
+  //   return () => {
+  //     cleanup
+  //   }
+  // }, [])
+
   return (
     <MainContainer
       style={{
@@ -32,6 +59,7 @@ export default function Home() {
         transition: "all .5s",
         maxWidth: "100vw",
       }}
+      onClick={handleMenuClose}
     >
       <Sidebar handleMenu={handleMenu} />
       <MenuButton handleMenu={handleMenu} />

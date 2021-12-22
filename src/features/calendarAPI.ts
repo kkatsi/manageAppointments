@@ -63,8 +63,6 @@ export async function getItems(minTime?: string, maxTime?: string) {
       // return
     })
     .catch((error) => {
-      alert(error);
-      console.log("error getItems");
       return [];
     });
 }
