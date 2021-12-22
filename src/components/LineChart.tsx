@@ -19,7 +19,14 @@ interface Props {
 
 export default function LineChart({ data }: Props) {
   return (
-    <XYPlot height={300} width={window.innerWidth - 30} xType="ordinal">
+    <XYPlot
+      height={300}
+      width={
+        document.querySelector(".content")?.clientWidth ||
+        window.innerWidth - 30
+      }
+      xType="ordinal"
+    >
       <XAxis />
       <YAxis />
       <HorizontalGridLines />
