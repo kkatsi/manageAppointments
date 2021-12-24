@@ -17,11 +17,15 @@ export interface calendarItem {
 export interface calendarState {
   value: calendarItem[];
   isLoading: boolean;
+  isSuccess: boolean;
+  isError: boolean;
 }
 
 export const initialState: calendarState = {
   value: [],
   isLoading: true,
+  isSuccess: false,
+  isError: false,
 };
 
 export const getCalendarItems = createAsyncThunk(
@@ -81,7 +85,16 @@ export const deleteCalendarEvent = createAsyncThunk(
 export const calendarSlice = createSlice({
   name: "calendar",
   initialState: initialState,
-  reducers: {},
+  reducers: {
+    setSuccess: (state, action) => {
+      state.isSuccess = action.payload;
+      state.isError = false;
+    },
+    setError: (state, action) => {
+      state.isSuccess = false;
+      state.isError = action.payload;
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(getCalendarItems.pending, (state) => {
@@ -104,9 +117,13 @@ export const calendarSlice = createSlice({
         console.log(action.payload);
         state.isLoading = false;
         if (action.payload) state.value.push(action.payload);
+        state.isSuccess = action.payload ? true : false;
+        state.isError = !action.payload ? true : false;
       })
       .addCase(insertCalendarEvent.rejected, (state) => {
         state.isLoading = false;
+        state.isError = true;
+        state.isSuccess = false;
       })
       .addCase(updateCalendarEvent.pending, (state) => {
         state.isLoading = true;
@@ -125,9 +142,13 @@ export const calendarSlice = createSlice({
               }
             : event
         );
+        state.isSuccess = action.payload ? true : false;
+        state.isError = !action.payload ? true : false;
       })
       .addCase(updateCalendarEvent.rejected, (state) => {
         state.isLoading = false;
+        state.isError = true;
+        state.isSuccess = false;
       })
       .addCase(deleteCalendarEvent.pending, (state) => {
         state.isLoading = true;
@@ -138,11 +159,17 @@ export const calendarSlice = createSlice({
         state.value = state.value.filter(
           (event) => event.id !== action.payload?.id
         );
+        state.isSuccess = action.payload ? true : false;
+        state.isError = !action.payload ? true : false;
       })
       .addCase(deleteCalendarEvent.rejected, (state) => {
         state.isLoading = false;
+        state.isSuccess = false;
+        state.isError = true;
       });
   },
 });
+
+export const { setSuccess, setError } = calendarSlice.actions;
 
 export default calendarSlice.reducer;
