@@ -15,6 +15,8 @@ import {
   deleteCalendarEvent,
   insertCalendarEvent,
   updateCalendarEvent,
+  setSuccess,
+  setError,
 } from "../features/calendar/calendarSlice";
 import { RootState } from "../app/store";
 import { useAppDispatch } from "../app/hooks";
@@ -160,9 +162,11 @@ const EventDialog = ({
   action,
   triggerButtonRef,
 }: Props) => {
-  const [error, setError] = useState(false);
-  const [success, setSuccess] = useState(false);
-  const [errorMessage, setErrorMessage] = useState("");
+  const success = useSelector((state: RootState) => state.calendar.isSuccess);
+  const error = useSelector((state: RootState) => state.calendar.isError);
+  // const [error, setError] = useState(false);
+  // const [success, setSuccess] = useState(false);
+  // const [errorMessage, setErrorMessage] = useState("");
   const [deleteSuccess, setDeleteSuccess] = useState(false);
   const [deleteError, setDeleteError] = useState(false);
   const [open, setOpen] = useState<boolean>(false);
@@ -212,15 +216,10 @@ const EventDialog = ({
             description: priceRef.current?.value || "",
             summary: nameRef.current?.value || "",
           })
-        )
-          .then(() => {
-            setOpen(false);
-            setSuccess(true);
-          })
-          .catch((error) => {
-            setError(true);
-            setErrorMessage(error);
-          });
+        ).then(() => {
+          setOpen(false);
+          // setSuccess(true);
+        });
       } else {
         dispatch(
           updateCalendarEvent({
@@ -230,15 +229,10 @@ const EventDialog = ({
             description: priceRef.current?.value || "",
             summary: nameRef.current?.value || "",
           })
-        )
-          .then(() => {
-            setOpen(false);
-            setSuccess(true);
-          })
-          .catch((error) => {
-            setError(true);
-            setErrorMessage(error);
-          });
+        ).then(() => {
+          setOpen(false);
+          // setSuccess(true);
+        });
       }
     },
     [dispatch, action, startDate, startingTime, endingTime, id]
@@ -398,42 +392,42 @@ const EventDialog = ({
           <Alert
             title="Επιτυχημένη καταχώρηση ραντεβού"
             text="Το νέο σας ραντεβού έχει εμφανιστεί στο ημερολόγιο."
-            onClose={() => setSuccess(false)}
+            onClose={() => dispatch(setSuccess(false))}
           />
         )}
         {error && action === "create" && (
           <Alert
             title="Αποτυχημένη καταχώρηση ραντεβού"
-            text={errorMessage}
-            onClose={() => setError(false)}
+            text="Συνέβησε κάποιο σφάλμα κατά την καταχώρηση του ραντεβού. Ελέγξτε την συνδεσή σας στο διαδίκτυο."
+            onClose={() => dispatch(setError(false))}
           />
         )}
         {success && action === "edit" && (
           <Alert
             title="Επιτυχημένη τροποποίηση ραντεβού"
             text="Το ραντεβού έχει ενημερωθέι και οι νέες πληροφορίες εμφανίζονται στο ημερολόγιο."
-            onClose={() => setSuccess(false)}
+            onClose={() => dispatch(setSuccess(false))}
           />
         )}
         {error && action === "edit" && (
           <Alert
             title="Αποτυχημένη τροποποίηση ραντεβού"
-            text={errorMessage}
-            onClose={() => setError(false)}
+            text="Συνέβησε κάποιο σφάλμα κατά την τροποποίηση του ραντεβού. Ελέγξτε την συνδεσή σας στο διαδίκτυο."
+            onClose={() => dispatch(setError(false))}
           />
         )}
         {deleteSuccess && (
           <Alert
             title="Επιτυχημένη διαγραφή ραντεβού"
-            text="Το ραντεβού έχει διαγραφεί επιτυχώς και έχει αφερεθεί από το ημερολόγιο."
-            onClose={() => setDeleteSuccess(false)}
+            text="Το ραντεβού έχει διαγραφεί επιτυχώς και έχει αφαιρεθεί από το ημερολόγιο."
+            onClose={() => dispatch(setSuccess(false))}
           />
         )}
         {deleteError && (
           <Alert
             title="Αποτυχημένη διαγραφή ραντεβού"
-            text="Συνέβησε κάποιο σφάλμα κατά την διαγραφή του ραντεβού"
-            onClose={() => setDeleteError(false)}
+            text="Συνέβησε κάποιο σφάλμα κατά την διαγραφή του ραντεβού. Ελέγξτε την σύνδεση σας στο διαδίκτυο."
+            onClose={() => dispatch(setError(false))}
           />
         )}
       </>
