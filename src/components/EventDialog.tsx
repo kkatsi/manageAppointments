@@ -167,8 +167,9 @@ const EventDialog = ({
   // const [error, setError] = useState(false);
   // const [success, setSuccess] = useState(false);
   // const [errorMessage, setErrorMessage] = useState("");
-  const [deleteSuccess, setDeleteSuccess] = useState(false);
-  const [deleteError, setDeleteError] = useState(false);
+  // const [deleteSuccess, setDeleteSuccess] = useState(false);
+  // const [deleteError, setDeleteError] = useState(false);
+  const [del, setDel] = useState(false);
   const [open, setOpen] = useState<boolean>(false);
   const [startingTime, setStartingTime] = useState<string>(start);
   const [endingTime, setEndingTime] = useState<string>("");
@@ -239,14 +240,11 @@ const EventDialog = ({
   );
 
   const handleEventDelete = useCallback(() => {
-    dispatch(deleteCalendarEvent({ id: id }))
-      .then(() => {
-        setOpen(false);
-        setDeleteSuccess(true);
-      })
-      .catch(() => {
-        setDeleteError(true);
-      });
+    dispatch(deleteCalendarEvent({ id: id })).then(() => {
+      setOpen(false);
+      setDel(true);
+      // setDeleteSuccess(true);
+    });
   }, [id, dispatch]);
 
   const duration = useMemo(() => {
@@ -388,46 +386,52 @@ const EventDialog = ({
       </Dialog>
 
       <>
-        {success && action === "create" && (
+        {success && action === "create" && !del && (
           <Alert
             title="Επιτυχημένη καταχώρηση ραντεβού"
             text="Το νέο σας ραντεβού έχει εμφανιστεί στο ημερολόγιο."
             onClose={() => dispatch(setSuccess(false))}
           />
         )}
-        {error && action === "create" && (
+        {error && action === "create" && !del && (
           <Alert
             title="Αποτυχημένη καταχώρηση ραντεβού"
             text="Συνέβησε κάποιο σφάλμα κατά την καταχώρηση του ραντεβού. Ελέγξτε την συνδεσή σας στο διαδίκτυο."
             onClose={() => dispatch(setError(false))}
           />
         )}
-        {success && action === "edit" && (
+        {success && action === "edit" && !del && (
           <Alert
             title="Επιτυχημένη τροποποίηση ραντεβού"
             text="Το ραντεβού έχει ενημερωθέι και οι νέες πληροφορίες εμφανίζονται στο ημερολόγιο."
             onClose={() => dispatch(setSuccess(false))}
           />
         )}
-        {error && action === "edit" && (
+        {error && action === "edit" && !del && (
           <Alert
             title="Αποτυχημένη τροποποίηση ραντεβού"
             text="Συνέβησε κάποιο σφάλμα κατά την τροποποίηση του ραντεβού. Ελέγξτε την συνδεσή σας στο διαδίκτυο."
             onClose={() => dispatch(setError(false))}
           />
         )}
-        {deleteSuccess && (
+        {success && del && (
           <Alert
             title="Επιτυχημένη διαγραφή ραντεβού"
             text="Το ραντεβού έχει διαγραφεί επιτυχώς και έχει αφαιρεθεί από το ημερολόγιο."
-            onClose={() => dispatch(setSuccess(false))}
+            onClose={() => {
+              dispatch(setSuccess(false));
+              setDel(false);
+            }}
           />
         )}
-        {deleteError && (
+        {error && del && (
           <Alert
             title="Αποτυχημένη διαγραφή ραντεβού"
             text="Συνέβησε κάποιο σφάλμα κατά την διαγραφή του ραντεβού. Ελέγξτε την σύνδεση σας στο διαδίκτυο."
-            onClose={() => dispatch(setError(false))}
+            onClose={() => {
+              dispatch(setError(false));
+              setDel(false);
+            }}
           />
         )}
       </>
