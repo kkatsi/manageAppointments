@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import "./App.css";
 import { useDispatch } from "react-redux";
 import { setCurrentUser, initialState } from "./features/user/userSlice";
@@ -6,6 +6,7 @@ import { Routes, Route } from "react-router-dom";
 import Login from "./pages/Login";
 import Home from "./pages/Home";
 import PrivateRoute from "./components/PrivateRoute";
+import DeleteAlert from "./components/DeleteAlert";
 
 function App() {
   const dispatch = useDispatch();
@@ -64,6 +65,22 @@ function App() {
     insertGapiScript();
   }, [insertGapiScript]);
 
+  const [offline, setOffline] = useState(false);
+
+  const updateOnlineStatus = useCallback(() => {
+    var offline = navigator.onLine ? false : true;
+    setOffline(offline);
+  }, []);
+
+  useEffect(() => {
+    window.addEventListener("offline", updateOnlineStatus);
+    window.addEventListener("online", updateOnlineStatus);
+    return () => {
+      window.removeEventListener("offline", updateOnlineStatus);
+      window.removeEventListener("online", updateOnlineStatus);
+    };
+  }, [updateOnlineStatus]);
+
   return (
     <>
       <Routes>
@@ -94,6 +111,7 @@ function App() {
 
         {/* <Route path="invoices" element={<Invoices />} /> */}
       </Routes>
+      {offline && <DeleteAlert />}
     </>
   );
 }

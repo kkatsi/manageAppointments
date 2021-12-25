@@ -1,8 +1,8 @@
-import React, { useState, useCallback, useEffect } from "react";
+import React, { useState, useCallback } from "react";
 import { Route, Routes } from "react-router";
 import styled from "styled-components";
 import tw from "twin.macro";
-import DeleteAlert from "../components/DeleteAlert";
+// import DeleteAlert from "../components/DeleteAlert";
 import MenuButton from "../components/MenuButton";
 import Sidebar from "../components/Sidebar";
 import About from "./About";
@@ -21,21 +21,6 @@ const MainContainer = styled.div`
 
 export default function Home() {
   const [isOpen, setOpen] = useState(false);
-  const [offline, setOffline] = useState(false);
-
-  const updateOnlineStatus = useCallback(() => {
-    var offline = navigator.onLine ? false : true;
-    setOffline(offline);
-  }, []);
-
-  useEffect(() => {
-    window.addEventListener("offline", updateOnlineStatus);
-    window.addEventListener("online", updateOnlineStatus);
-    return () => {
-      window.removeEventListener("offline", updateOnlineStatus);
-      window.removeEventListener("online", updateOnlineStatus);
-    };
-  }, [updateOnlineStatus]);
 
   const handleMenu = useCallback(() => {
     setOpen((prevState: boolean) => !prevState);
@@ -90,7 +75,6 @@ export default function Home() {
         <Route path="settings/change-email" element={<ChangeEmail />} />
         <Route path="settings/change-password" element={<ChangePassword />} /> */}
       </Routes>
-      {offline && <DeleteAlert />}
     </MainContainer>
   );
 }
