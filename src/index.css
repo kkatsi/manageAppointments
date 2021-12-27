@@ -16,7 +16,7 @@ body {
 
 #Kalend__timetable {
   width: 100% !important;
-  padding-left: 35px !important;
+  /* padding-left: 35px !important; */
 }
 
 .react-datepicker__year-wrapper {
@@ -32,6 +32,19 @@ body {
   .Kalend__CalendarDesktopNavigation__buttons
     .Kalend__ButtonIcon__container:nth-last-child(2) {
     display: none !important;
+  }
+  .Kalend__CalendarHeader-tall > .Kalend__CalendarHeaderCol {
+    padding-left: 80px !important;
+  }
+  .Kalend__button.Kalend__Event-showMoreMonth.Kalend__ButtonBase {
+    height: 50px !important;
+  }
+  .Kalend__button.Kalend__Monthview_Event.Kalend__ButtonBase > .Kalend__text {
+    font-size: 11px;
+    line-height: 0.8;
+    border-radius: 0 !important;
+    width: 100%;
+    text-align: center;
   }
 }
 

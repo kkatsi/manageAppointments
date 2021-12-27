@@ -17,6 +17,7 @@ import "kalend/dist/styles/index.css"; // import styles
 import randomColor from "randomcolor";
 import EventDialog from "../components/EventDialog";
 import { getCalendarItems } from "../features/calendar/calendarSlice";
+import gr from "../gr.json";
 
 export default function MainScreen() {
   const calendarItems = useSelector((state: RootState) => state.calendar.value);
@@ -158,6 +159,8 @@ export default function MainScreen() {
     <>
       <PageContent div100>
         <Kalend
+          customLanguage={gr}
+          language={"customLanguage"}
           onEventClick={handleExistingEventClick}
           onNewEventClick={handleNewEventClick}
           events={formattedItems}
@@ -165,7 +168,6 @@ export default function MainScreen() {
           hourHeight={60}
           initialView={CalendarView.WEEK}
           disabledViews={[CalendarView.THREE_DAYS]}
-          onPageChange={() => true}
         />
       </PageContent>
       <EventDialog
