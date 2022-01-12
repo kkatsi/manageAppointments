@@ -3,11 +3,13 @@ import { ThunkAction } from "redux-thunk";
 import { Action } from "redux";
 import userReducer from "../features/user/userSlice";
 import calendarReducer from "../features/calendar/calendarSlice";
+import appReducer from "../features/app/appSlice";
 
 export const store = configureStore({
   reducer: {
     user: userReducer,
     calendar: calendarReducer,
+    app: appReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({

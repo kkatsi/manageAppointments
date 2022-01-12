@@ -7,6 +7,13 @@ import Login from "./pages/Login";
 import Home from "./pages/Home";
 import PrivateRoute from "./components/PrivateRoute";
 import DeleteAlert from "./components/DeleteAlert";
+import { useAppDispatch } from "./app/hooks";
+import {
+  deleteCalendarEvent,
+  insertCalendarEvent,
+  updateCalendarEvent,
+} from "./features/calendar/calendarSlice";
+import { setOnline } from "./features/app/appSlice";
 
 function App() {
   const dispatch = useDispatch();
@@ -66,11 +73,105 @@ function App() {
   }, [insertGapiScript]);
 
   const [offline, setOffline] = useState(false);
+  const appDispatch = useAppDispatch();
+
+  const postSavedRequests = useCallback(async () => {
+    let savedCreates: any[] = [];
+    let savedEdits: any[] = [];
+    let savedDeletes: any[] = [];
+    // localStorage.setItem(
+    //   "requests",
+    //   JSON.stringify([
+    //     { action: "create" },
+    //     { action: "delete" },
+    //     { action: "edit" },
+    //   ])
+    // );
+    const savedReqs = JSON.parse(localStorage.getItem("requests") || "");
+    if (savedReqs && savedReqs?.length > 0) {
+      savedReqs.forEach(async (req) => {
+        switch (req.action) {
+          case "create":
+            savedCreates.push(req);
+            break;
+          case "edit":
+            savedEdits.push(req);
+            break;
+          case "delete":
+            savedDeletes.push(req);
+            break;
+          default:
+            break;
+        }
+
+        savedCreates = savedCreates.map((req) => {
+          return new Promise<void>((resolve, reject) => {
+            appDispatch(
+              insertCalendarEvent({
+                start: req.start,
+                end: req.end,
+                description: req.description,
+                summary: req.summary,
+              })
+            ).then(() => resolve());
+          });
+        });
+
+        savedEdits = savedEdits.map((req) => {
+          return new Promise<void>((resolve, reject) => {
+            appDispatch(
+              updateCalendarEvent({
+                id: req.id,
+                start: req.start,
+                end: req.end,
+                description: req.description,
+                summary: req.summary,
+              })
+            ).then(() => resolve());
+          });
+        });
+
+        savedDeletes = savedDeletes.map((req) => {
+          return new Promise<void>((resolve, reject) => {
+            appDispatch(
+              deleteCalendarEvent({
+                id: req.id,
+              })
+            ).then(() => resolve());
+          });
+        });
+
+        for (let i = 0; i < savedCreates.length; i++) {
+          await savedCreates[i];
+        }
+        for (let i = 0; i < savedEdits.length; i++) {
+          await savedEdits[i];
+        }
+        for (let i = 0; i < savedDeletes.length; i++) {
+          await savedDeletes[i];
+        }
+        localStorage.removeItem("requests");
+
+        // Promise.all(savedCreates).then(() => {
+        //   Promise.all(savedEdits).then(() => {
+        //     Promise.all(savedDeletes).then(() => {
+        //     });
+        //   });
+        // });
+      });
+    }
+  }, [appDispatch]);
 
   const updateOnlineStatus = useCallback(() => {
-    var offline = navigator.onLine ? false : true;
-    setOffline(offline);
-  }, []);
+    if (navigator.onLine) {
+      setOffline(false);
+      dispatch(setOnline(true));
+      postSavedRequests();
+      return;
+    }
+    setOffline(true);
+    dispatch(setOnline(false));
+  }, [postSavedRequests, dispatch]);
 
   useEffect(() => {
     window.addEventListener("offline", updateOnlineStatus);

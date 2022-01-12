@@ -164,6 +164,7 @@ const EventDialog = ({
 }: Props) => {
   const success = useSelector((state: RootState) => state.calendar.isSuccess);
   const error = useSelector((state: RootState) => state.calendar.isError);
+  const online = useSelector((state: RootState) => state.app.isOnline);
   // const [error, setError] = useState(false);
   // const [success, setSuccess] = useState(false);
   // const [errorMessage, setErrorMessage] = useState("");
@@ -192,6 +193,16 @@ const EventDialog = ({
     setEndingTime(end);
   }, [end]);
 
+  const addToLocalStorage = useCallback((obj) => {
+    const originalObject = (({ action, ...others }) => ({ ...others }))(obj);
+    const savedItems = JSON.parse(localStorage.getItem("requests") || "[]");
+    console.log(savedItems);
+
+    if (!savedItems.includes(originalObject)) {
+      localStorage.setItem("requests", JSON.stringify([...savedItems, obj]));
+    }
+  }, []);
+
   const handleSubmit = useCallback(
     (e) => {
       e.preventDefault();
@@ -217,10 +228,29 @@ const EventDialog = ({
             description: priceRef.current?.value || "",
             summary: nameRef.current?.value || "",
           })
-        ).then(() => {
-          setOpen(false);
-          // setSuccess(true);
-        });
+        )
+          .then(() => {
+            setOpen(false);
+            // setSuccess(true);
+          })
+          .catch(() => {
+            addToLocalStorage({
+              start: startDate.toISOString(),
+              end: endDate.toISOString(),
+              description: priceRef.current?.value || "",
+              summary: nameRef.current?.value || "",
+              action: "create",
+            });
+          });
+        if (!online) {
+          addToLocalStorage({
+            start: startDate.toISOString(),
+            end: endDate.toISOString(),
+            description: priceRef.current?.value || "",
+            summary: nameRef.current?.value || "",
+            action: "create",
+          });
+        }
       } else {
         dispatch(
           updateCalendarEvent({
@@ -230,22 +260,65 @@ const EventDialog = ({
             description: priceRef.current?.value || "",
             summary: nameRef.current?.value || "",
           })
-        ).then(() => {
-          setOpen(false);
-          // setSuccess(true);
-        });
+        )
+          .then(() => {
+            setOpen(false);
+            // setSuccess(true);
+          })
+          .catch(() => {
+            addToLocalStorage({
+              id: id,
+              start: startDate.toISOString(),
+              end: endDate.toISOString(),
+              description: priceRef.current?.value || "",
+              summary: nameRef.current?.value || "",
+              action: "edit",
+            });
+          });
+        if (!online) {
+          addToLocalStorage({
+            id: id,
+            start: startDate.toISOString(),
+            end: endDate.toISOString(),
+            description: priceRef.current?.value || "",
+            summary: nameRef.current?.value || "",
+            action: "edit",
+          });
+        }
       }
     },
-    [dispatch, action, startDate, startingTime, endingTime, id]
+    [
+      dispatch,
+      action,
+      startDate,
+      startingTime,
+      endingTime,
+      id,
+      addToLocalStorage,
+      online,
+    ]
   );
 
   const handleEventDelete = useCallback(() => {
-    dispatch(deleteCalendarEvent({ id: id })).then(() => {
-      setOpen(false);
-      setDel(true);
-      // setDeleteSuccess(true);
-    });
-  }, [id, dispatch]);
+    dispatch(deleteCalendarEvent({ id: id }))
+      .then(() => {
+        setOpen(false);
+        setDel(true);
+        // setDeleteSuccess(true);
+      })
+      .catch(() => {
+        addToLocalStorage({
+          id: id,
+          action: "delete",
+        });
+      });
+    if (!online) {
+      addToLocalStorage({
+        id: id,
+        action: "delete",
+      });
+    }
+  }, [id, dispatch, online, addToLocalStorage]);
 
   const duration = useMemo(() => {
     const durationObj = intervalToDuration({
