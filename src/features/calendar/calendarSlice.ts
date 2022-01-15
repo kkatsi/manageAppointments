@@ -114,9 +114,16 @@ export const calendarSlice = createSlice({
         state.isLoading = true;
       })
       .addCase(insertCalendarEvent.fulfilled, (state, action) => {
-        console.log(action.payload);
         state.isLoading = false;
-        if (action.payload) state.value.push(action.payload);
+        if (
+          action.payload &&
+          !state.value.some(
+            (item) =>
+              item.start === action.payload?.start &&
+              item.end === action.payload?.end
+          )
+        )
+          state.value.push(action.payload);
         state.isSuccess = action.payload ? true : false;
         state.isError = !action.payload ? true : false;
       })

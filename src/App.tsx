@@ -79,14 +79,7 @@ function App() {
     let savedCreates: any[] = [];
     let savedEdits: any[] = [];
     let savedDeletes: any[] = [];
-    // localStorage.setItem(
-    //   "requests",
-    //   JSON.stringify([
-    //     { action: "create" },
-    //     { action: "delete" },
-    //     { action: "edit" },
-    //   ])
-    // );
+
     const savedReqs = JSON.parse(localStorage.getItem("requests") || "");
     if (savedReqs && savedReqs?.length > 0) {
       savedReqs.forEach(async (req) => {
@@ -151,13 +144,6 @@ function App() {
           await savedDeletes[i];
         }
         localStorage.removeItem("requests");
-
-        // Promise.all(savedCreates).then(() => {
-        //   Promise.all(savedEdits).then(() => {
-        //     Promise.all(savedDeletes).then(() => {
-        //     });
-        //   });
-        // });
       });
     }
   }, [appDispatch]);

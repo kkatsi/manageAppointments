@@ -96,7 +96,13 @@ export async function insertEvent(
       };
     })
     .catch((error) => {
-      return null;
+      return {
+        start: event.start.dateTime,
+        end: event.end.dateTime,
+        description: description,
+        summary: summary,
+        id: newUniqueId,
+      };
     });
 }
 
@@ -130,7 +136,13 @@ export async function updateEvent(
       };
     })
     .catch((error) => {
-      return null;
+      return {
+        start: event.start.dateTime,
+        end: event.end.dateTime,
+        description: description,
+        summary: summary,
+        id: id,
+      };
     });
 }
 
@@ -146,6 +158,8 @@ export async function deleteEvent(id: string) {
       };
     })
     .catch((error) => {
-      return null;
+      return {
+        id: id,
+      };
     });
 }
