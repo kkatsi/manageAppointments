@@ -357,7 +357,7 @@ const EventDialog = ({
               <DatePicker
                 locale="el"
                 selected={startDate}
-                className="text-blue-700 text-sm w-full bg-blue-50 rounded-md p-2"
+                className="text-blue-700 w-full bg-blue-50 rounded-md p-2"
                 onChange={(newDate: Date) => handleStartDateChange(newDate)}
                 dateFormat="EEEE, d MMM"
               />
