@@ -72,6 +72,18 @@ function App() {
     insertGapiScript();
   }, [insertGapiScript]);
 
+  useEffect(() => {
+    document.addEventListener(
+      "touchmove",
+      function (event: any) {
+        if (event.scale !== 1) {
+          event.preventDefault();
+        }
+      },
+      { passive: false }
+    );
+  }, []);
+
   const [offline, setOffline] = useState(false);
   const appDispatch = useAppDispatch();
 
